@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة الاختبارات التفاعلية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0b1320;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    
+    --blue-accent: #38bdf8;
+    --blue-glow: rgba(56, 189, 248, 0.25);
+    
+    --gold-accent: #d4af5a;
+    --gold-glow: rgba(212, 175, 90, 0.25);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+/* =========================================================
+   BACKGROUND GLOWS & GRID
+   ========================================================= */
+.bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(800px 500px at 15% 20%, rgba(56, 189, 248, 0.12), transparent 70%),
+        radial-gradient(800px 500px at 85% 80%, rgba(212, 175, 90, 0.12), transparent 70%),
+        linear-gradient(180deg, #090e17 0%, #0d1726 100%);
+}
+
+.bg-pattern {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.15;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.25) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
+/* =========================================================
+   MAIN PORTAL (HOME HUB)
+   ========================================================= */
+#hubView {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#hubView.hidden {
+    opacity: 0;
+    transform: scale(0.96);
+    pointer-events: none;
+    display: none;
+}
+
+.hub-header {
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 650px;
+}
+
+.hub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--blue-accent);
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.hub-title {
+    font-family: 'Amiri', serif;
+    font-size: clamp(34px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.25;
+    background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+}
+
+.hub-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* CARD SELECTION GRID */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 380px));
+    gap: 28px;
+    width: 100%;
+    max-width: 820px;
+}
+
+.quiz-portal-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(16px);
+    border-radius: 24px;
+    padding: 36px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+}
+
+.quiz-portal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 2px;
+    background: transparent;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: background 0.3s;
+}
+
+/* Quiz 1 Specific Styles */
+.card-quiz1:hover {
+    transform: translateY(-8px);
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 25px 50px -15px var(--blue-glow);
+}
+.card-quiz1:hover .card-icon-wrap {
+    transform: scale(1.1) rotate(-4deg);
+    border-color: var(--blue-accent);
+    box-shadow: 0 0 24px var(--blue-glow);
+}
+
+/* Quiz 2 Specific Styles */
+.card-quiz2:hover {
+    transform: translateY(-8px);
+    border-color: rgba(212, 175, 90, 0.4);
+    box-shadow: 0 25px 50px -15px var(--gold-glow);
+}
+.card-quiz2:hover .card-icon-wrap {
+    transform: scale(1.1) rotate(4deg);
+    border-color: var(--gold-accent);
+    box-shadow: 0 0 24px var(--gold-glow);
+}
+
+.card-icon-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 22px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    font-size: 34px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-quiz1 .card-icon-wrap { color: var(--blue-accent); }
+.card-quiz2 .card-icon-wrap { color: var(--gold-accent); }
+
+.card-tag {
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+.card-quiz1 .card-tag { color: var(--blue-accent); }
+.card-quiz2 .card-tag { color: var(--gold-accent); }
+
+.card-title {
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.card-desc {
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    flex-grow: 1;
+}
+
+.card-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.card-quiz1 .card-action-btn {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    box-shadow: 0 8px 20px -6px rgba(2, 132, 199, 0.5);
+}
+.card-quiz1:hover .card-action-btn {
+    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+    color: #082f49;
+}
+
+.card-quiz2 .card-action-btn {
+    background: linear-gradient(135deg, #b88e39 0%, #946d23 100%);
+    box-shadow: 0 8px 20px -6px rgba(184, 142, 57, 0.5);
+}
+.card-quiz2:hover .card-action-btn {
+    background: linear-gradient(135deg, #e4be68 0%, #b88e39 100%);
+    color: #261904;
+}
+
+/* =========================================================
+   QUIZ ACTIVE DISPLAY SCREEN (IFRAME HOLDER)
+   ========================================================= */
+#quizView {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    background: #000;
+}
+
+#quizView.active {
+    display: flex;
+}
+
+/* QUIZ TOP BAR WITH BACK BUTTON */
+.quiz-top-bar {
+    height: 58px;
+    background: rgba(13, 23, 38, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 10;
+}
+
+.quiz-top-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.quiz-top-title {
+    font-family: 'Amiri', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.back-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.back-home-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    transform: translateX(-3px);
+}
+
+.iframe-container {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.quiz-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+        gap: 18px;
+    }
+    .quiz-portal-card {
+        padding: 24px 20px;
+    }
+    .hub-header {
+        margin-bottom: 32px;
+    }
+    .hub-title {
+        font-size: 30px;
+    }
+    .hub-sub {
+        font-size: 15px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="bg-pattern"></div>
+
+<!-- =========================================================
+     MAIN SCREEN (SELECTION HUB)
+     ========================================================= -->
+<main id="hubView">
+    <header class="hub-header">
+        <div class="hub-badge">✦ منصة الاختبارات التفاعلية ✦</div>
+        <h1 class="hub-title">اختاري الاختبار للبدء</h1>
+        <p class="hub-sub">اختاري أحد الجزأين أدناه للانتقال المباشر وتجربة الأسئلة التفاعلية بشكل مخصص وشامل.</p>
+    </header>
+
+    <div class="cards-grid">
+        <!-- CARD 1 -->
+        <article class="quiz-portal-card card-quiz1" onclick="launchQuiz('samah')">
+            <div class="card-icon-wrap">✍️</div>
+            <div class="card-tag">الجزء الأول</div>
+            <h2 class="card-title">استراتيجيات الكتابة</h2>
+            <p class="card-desc">٥ أسئلة تفاعلية تركز على المخطط العام، والربط المنطقي، وترتيب الأفكار من إعداد أ. سماح.</p>
+            <button class="card-action-btn" type="button">
+                <span>بدء Quiz 1</span>
+                <span>←</span>
+            </button>
+        </article>
+
+        <!-- CARD 2 -->
+        <article class="quiz-portal-card card-quiz2" onclick="launchQuiz('part2')">
+            <div class="card-icon-wrap">⚖️</div>
+            <div class="card-tag">الجزء الثاني</div>
+            <h2 class="card-title">غرفة القرار الأخلاقي</h2>
+            <p class="card-desc">٣ مواقف دقيقة تختبر البوصلة الأخلاقية والقرارات الميدانية في بحوث ودراسات رياض الأطفال.</p>
+            <button class="card-action-btn" type="button">
+                <span>بدء Quiz 2</span>
+                <span>←</span>
+            </button>
+        </article>
+    </div>
+</main>
+
+<!-- =========================================================
+     QUIZ DISPLAY IFRAME INTERFACE
+     ========================================================= -->
+<section id="quizView">
+    <nav class="quiz-top-bar">
+        <div class="quiz-top-info">
+            <button class="back-home-btn" onclick="returnToHub()">
+                <span>←</span>
+                <span>العودة للرئيسية</span>
+            </button>
+            <span class="quiz-top-title" id="quizActiveTitle"></span>
+        </div>
+    </nav>
+    <div class="iframe-container">
+        <iframe class="quiz-iframe" id="quizFrame" src="" title="نافذة الاختبار"></iframe>
+    </div>
+</section>
+
+<script>
+const hubView = document.getElementById('hubView');
+const quizView = document.getElementById('quizView');
+const quizFrame = document.getElementById('quizFrame');
+const quizActiveTitle = document.getElementById('quizActiveTitle');
+
+const QUIZ_SOURCES = {
+    'samah': {
+        url: 'Quiz Part Samah.html',
+        title: 'Quiz 1 · استراتيجيات الكتابة (سماح)'
+    },
+    'part2': {
+        url: 'Quiz Part 2.html',
+        title: 'Quiz 2 · غرفة اتخاذ القرار الأخلاقي'
+    }
+};
+
+function launchQuiz(key) {
+    const selected = QUIZ_SOURCES[key];
+    if (!selected) return;
+
+    quizActiveTitle.textContent = selected.title;
+    quizFrame.src = selected.url;
+
+    hubView.classList.add('hidden');
+    quizView.classList.add('active');
+}
+
+function returnToHub() {
+    quizView.classList.remove('active');
+    hubView.classList.remove('hidden');
+    quizFrame.src = ''; // Frees up audio & resets state cleanly
+}
+</script>
+</body>
+</html>
