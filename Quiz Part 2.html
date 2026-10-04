@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>غرفة اتخاذ القرار الأخلاقي · بحوث رياض الأطفال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   DESIGN TOKENS — academic ink & parchment
+   ========================================================= */
+:root{
+    --ink:        #1a2434;
+    --ink-deep:   #0c1522;
+    --ink-soft:   #3a4d68;
+    --gold:       #a8823a;
+    --gold-bright:#d4af5a;
+    --gold-pale:  #e8d9a8;
+    --gold-faint: #f0e4c0;
+
+    --paper:      #fbf6ea;
+    --paper-deep: #f4ebd6;
+    --paper-edge: #e2d4ad;
+
+    --sepia:      #6b5844;
+    --muted:      #8a7a63;
+
+    --ok:         #3d6b48;
+    --ok-bright:  #5a8a64;
+    --bad:        #8b2635;
+    --bad-bright: #a83e4d;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+body{
+    min-height:100dvh;
+    display:grid;
+    place-items:center;
+    padding:28px 16px;
+    font-family:'Tajawal',sans-serif;
+    color:var(--ink);
+    background:
+        radial-gradient(1400px 700px at 50% -10%, #2a3a52 0%, transparent 55%),
+        radial-gradient(1000px 600px at 8% 112%, #14253a 0%, transparent 58%),
+        #0a121d;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+}
+
+/* =========================================================
+   CARD — a page from a manuscript
+   ========================================================= */
+.quiz-card{
+    width:min(920px,100%);
+    height:min(740px,94dvh);
+    position:relative;
+    isolation:isolate;
+    border-radius:6px;
+    background:
+        radial-gradient(700px 400px at 50% -5%, rgba(212,175,90,.10) 0%, transparent 70%),
+        radial-gradient(500px 300px at 90% 105%, rgba(168,130,58,.06) 0%, transparent 70%),
+        linear-gradient(180deg, #fcf8ee 0%, #f5ecd6 100%);
+    box-shadow:
+        0 0 0 1px rgba(168,130,58,.35),
+        0 0 0 6px rgba(251,246,234,.035),
+        0 46px 90px -34px rgba(0,0,0,.85),
+        inset 0 0 120px rgba(168,130,58,.10);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.quiz-card::before{
+    content:'';
+    position:absolute; inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.07;
+    mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.quiz-card > *{ position:relative; z-index:1; }
+
+.corner{
+    position:absolute;
+    width:26px; height:26px;
+    border:1px solid var(--gold);
+    opacity:.5;
+    pointer-events:none;
+    z-index:2;
+}
+.corner.tl{ top:10px;    right:10px;  border-left:none; border-bottom:none; }
+.corner.tr{ top:10px;    left:10px;   border-right:none;border-bottom:none; }
+.corner.bl{ bottom:10px; right:10px;  border-left:none; border-top:none; }
+.corner.br{ bottom:10px; left:10px;   border-right:none;border-top:none; }
+
+/* =========================================================
+   START OVERLAY
+   ========================================================= */
+.start-overlay{
+    position:absolute; inset:0;
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 30px;
+    background:
+        radial-gradient(700px 420px at 50% 30%, rgba(212,175,90,.10) 0%, transparent 70%),
+        linear-gradient(180deg, #fcf8ee 0%, #f2e8ce 100%);
+    transition:opacity .6s ease, visibility .6s;
+}
+.start-overlay.gone{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.overlay-ornament{
+    font-family:'Amiri',serif;
+    font-size:34px;
+    color:var(--gold);
+    line-height:1;
+    margin-bottom:22px;
+    opacity:.75;
+}
+
+.overlay-eyebrow{
+    font-family:'Cairo',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:3px;
+    color:var(--sepia);
+    text-transform:uppercase;
+    opacity:.75;
+    margin-bottom:12px;
+}
+
+.overlay-title{
+    font-family:'Amiri',serif;
+    font-size:38px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.3;
+    margin-bottom:8px;
+    max-width:640px;
+}
+
+.overlay-rule{
+    width:130px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin:20px auto;
+    position:relative;
+}
+.overlay-rule::after{
+    content:'✦';
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    background:#f7f0dd;
+    color:var(--gold);
+    font-size:11px;
+    padding:0 8px;
+    line-height:1;
+}
+
+.overlay-sub{
+    font-size:15px;
+    color:var(--sepia);
+    line-height:1.9;
+    max-width:460px;
+    margin-bottom:14px;
+}
+.overlay-sub em{
+    font-style:normal;
+    color:var(--gold);
+    font-weight:700;
+}
+
+.overlay-note{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.8;
+    max-width:420px;
+    margin-bottom:32px;
+    padding:12px 18px;
+    border:1px solid rgba(168,130,58,.3);
+    border-radius:2px;
+    background:rgba(255,255,255,.45);
+}
+
+.start-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    padding:15px 38px;
+    border:none;
+    border-radius:2px;
+    cursor:pointer;
+    font-family:'Cairo',sans-serif;
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:.5px;
+    color:#22190A;
+    background:linear-gradient(135deg, #d4af5a 0%, #b8923e 100%);
+    box-shadow:
+        0 18px 34px -18px rgba(168,130,58,.9),
+        inset 0 1px 0 rgba(255,255,255,.55),
+        inset 0 -1px 0 rgba(0,0,0,.12);
+    transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s;
+}
+.start-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:
+        0 26px 42px -18px rgba(168,130,58,1),
+        inset 0 1px 0 rgba(255,255,255,.65),
+        inset 0 -1px 0 rgba(0,0,0,.12);
+}
+.start-btn .arr{ transition:transform .3s; font-size:19px; }
+.start-btn:hover .arr{ transform:translateX(-5px); }
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+.timer-track{
+    height:2px;
+    flex-shrink:0;
+    background:rgba(168,130,58,.12);
+    overflow:hidden;
+    position:relative;
+}
+.timer-fill{
+    height:100%;
+    width:100%;
+    background:linear-gradient(90deg, #b8923e 0%, #d4af5a 60%, #e8d9a8 100%);
+    box-shadow:0 0 10px rgba(212,175,90,.6);
+    will-change:width;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.quiz-header{
+    flex-shrink:0;
+    padding:18px 30px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    position:relative;
+    border-bottom:1px solid rgba(168,130,58,.22);
+}
+.quiz-header::after{
+    content:'❦';
+    position:absolute;
+    bottom:-10px; left:50%;
+    transform:translateX(-50%);
+    background:var(--paper);
+    padding:0 12px;
+    color:var(--gold);
+    font-size:13px;
+    line-height:1;
+    font-family:'Amiri',serif;
+}
+
+.brand{ display:flex; align-items:center; gap:14px; min-width:0; }
+
+.brand-mark{
+    width:44px; height:44px;
+    flex-shrink:0;
+    display:grid; place-items:center;
+    border-radius:50%;
+    font-family:'Amiri',serif;
+    font-size:22px;
+    color:var(--gold-bright);
+    background:
+        radial-gradient(circle at 35% 30%, rgba(212,175,90,.22), transparent 60%),
+        var(--ink);
+    box-shadow:
+        inset 0 0 0 1px rgba(212,175,90,.5),
+        0 8px 18px -10px rgba(12,21,34,.9);
+}
+
+.brand-text h1{
+    font-family:'Amiri',serif;
+    font-size:16.5px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.25;
+}
+.brand-text p{
+    font-size:11.5px;
+    letter-spacing:1px;
+    color:var(--sepia);
+    margin-top:3px;
+    opacity:.8;
+}
+
+.header-right{ display:flex; align-items:center; gap:12px; }
+
+.page-mark{
+    font-family:'Amiri',serif;
+    font-size:14px;
+    color:var(--sepia);
+    padding:5px 10px;
+    border:1px solid rgba(168,130,58,.3);
+    border-radius:2px;
+    background:rgba(255,255,255,.4);
+    letter-spacing:.5px;
+    white-space:nowrap;
+}
+
+.dots{ display:flex; align-items:center; gap:7px; }
+.dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:rgba(168,130,58,.25);
+    transition:all .35s cubic-bezier(.4,0,.2,1);
+}
+.dot.done{ background:var(--gold); }
+.dot.active{
+    width:20px;
+    border-radius:99px;
+    background:linear-gradient(90deg, var(--gold), var(--gold-bright));
+    box-shadow:0 0 0 3px rgba(168,130,58,.14);
+}
+
+.score-chip{
+    display:flex; align-items:center; gap:7px;
+    padding:7px 14px;
+    border-radius:2px;
+    background:var(--ink);
+    color:var(--gold-pale);
+    font-family:'Cairo',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.5px;
+    box-shadow:
+        inset 0 0 0 1px rgba(212,175,90,.35),
+        0 10px 20px -14px rgba(12,21,34,1);
+    white-space:nowrap;
+}
+.score-chip strong{
+    color:var(--gold-bright);
+    font-size:15px;
+    font-family:'Amiri',serif;
+}
+.score-chip .total{ opacity:.55; }
+
+.icon-btn{
+    width:38px; height:38px;
+    flex-shrink:0;
+    display:grid; place-items:center;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:15px;
+    background:rgba(255,255,255,.5);
+    border:1px solid rgba(168,130,58,.35);
+    color:var(--sepia);
+    transition:.25s;
+}
+.icon-btn:hover{
+    background:#fff;
+    border-color:var(--gold);
+    transform:translateY(-1px);
+    box-shadow:0 8px 16px -10px rgba(168,130,58,.8);
+}
+.icon-btn.off{ opacity:.4; }
+
+/* =========================================================
+   QUESTION
+   ========================================================= */
+.question-area{
+    flex:1;
+    padding:34px 34px 26px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:26px;
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(168,130,58,.4) transparent;
+}
+.question-area::-webkit-scrollbar{ width:6px; }
+.question-area::-webkit-scrollbar-thumb{ background:rgba(168,130,58,.35); border-radius:99px; }
+
+.question-block{
+    max-width:760px;
+    margin:0 auto;
+    width:100%;
+    text-align:center;
+    animation:fadeUp .5s ease both;
+}
+
+.q-fleuron{
+    color:var(--gold);
+    font-size:15px;
+    font-family:'Amiri',serif;
+    opacity:.65;
+    display:block;
+    margin-bottom:16px;
+    letter-spacing:8px;
+}
+
+.q-kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:16px;
+    padding:5px 14px;
+    border-radius:99px;
+    background:rgba(168,130,58,.12);
+    border:1px solid rgba(168,130,58,.4);
+    font-family:'Cairo',sans-serif;
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:2px;
+    color:#8a6a16;
+}
+.q-kicker .seal-dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 3px rgba(168,130,58,.18);
+}
+
+.question-text{
+    font-family:'Amiri',serif;
+    font-size:24px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.75;
+}
+.q-sub{
+    display:block;
+    margin-top:14px;
+    font-family:'Tajawal',sans-serif;
+    font-size:15.5px;
+    font-weight:500;
+    color:var(--sepia);
+    line-height:1.8;
+}
+
+/* Scenario box — a field note */
+.scenario{
+    margin-top:18px;
+    text-align:right;
+    padding:18px 22px;
+    background:
+        radial-gradient(400px 200px at 20% 0%, rgba(212,175,90,.08), transparent 70%),
+        linear-gradient(180deg, #fffdf6 0%, #fbf5e4 100%);
+    border:1px solid rgba(168,130,58,.35);
+    border-right:3px solid var(--gold);
+    border-radius:2px;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.6),
+        0 14px 30px -22px rgba(168,130,58,.8);
+    position:relative;
+}
+.scenario::before{
+    content:'الموقف الميداني';
+    position:absolute;
+    top:-9px; right:16px;
+    background:var(--paper);
+    padding:0 10px;
+    font-family:'Cairo',sans-serif;
+    font-size:10.5px;
+    font-weight:800;
+    letter-spacing:2px;
+    color:var(--gold);
+}
+.scenario p{
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    line-height:1.85;
+    color:var(--ink-soft);
+    font-weight:500;
+}
+.scenario .quote{
+    color:var(--bad);
+    font-weight:700;
+    font-style:italic;
+}
+
+/* Golden question variant */
+.question-block.golden .question-text{
+    position:relative;
+    background:
+        radial-gradient(400px 200px at 50% 0%, rgba(212,175,90,.15), transparent 70%),
+        linear-gradient(180deg, #fffdf6 0%, #fbf3dc 100%);
+    border:1px solid rgba(168,130,58,.45);
+    border-radius:2px;
+    padding:30px 30px 26px;
+    color:#7a5f1c;
+    box-shadow:
+        inset 0 0 0 1px rgba(168,130,58,.12),
+        0 24px 50px -30px rgba(168,130,58,.9);
+}
+.question-block.golden .question-text::before,
+.question-block.golden .question-text::after{
+    content:'';
+    position:absolute;
+    width:14px; height:14px;
+    border:1px solid var(--gold);
+}
+.question-block.golden .question-text::before{
+    top:-7px; right:-7px; border-left:none; border-bottom:none;
+}
+.question-block.golden .question-text::after{
+    bottom:-7px; left:-7px; border-right:none; border-top:none;
+}
+.question-block.golden .q-sub{ color:#9a7d34; }
+
+/* =========================================================
+   OPTIONS
+   ========================================================= */
+.options-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+    width:100%;
+    max-width:780px;
+    margin:0 auto;
+}
+.options-grid.single{ grid-template-columns:1fr; max-width:680px; }
+
+.option-btn{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 18px;
+    border:1px solid rgba(168,130,58,.28);
+    border-radius:2px;
+    background:
+        linear-gradient(180deg, #ffffff 0%, #fdf9ef 100%);
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    text-align:right;
+    line-height:1.6;
+    cursor:pointer;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.9),
+        0 1px 0 rgba(168,130,58,.12);
+    transition:
+        transform .2s cubic-bezier(.4,0,.2,1),
+        border-color .2s,
+        box-shadow .25s,
+        background .2s,
+        opacity .3s;
+}
+.option-btn:hover:not(.locked){
+    transform:translateY(-2px);
+    border-color:var(--gold);
+    background:linear-gradient(180deg, #ffffff 0%, #fbf2dc 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,1),
+        0 14px 26px -16px rgba(168,130,58,.95);
+}
+.option-btn:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+}
+
+.letter{
+    width:32px; height:32px;
+    flex-shrink:0;
+    display:grid; place-items:center;
+    border-radius:50%;
+    font-family:'Amiri',serif;
+    font-size:15px;
+    font-weight:700;
+    color:var(--gold);
+    background:rgba(168,130,58,.08);
+    border:1px solid rgba(168,130,58,.4);
+    transition:.22s;
+}
+.option-btn:hover:not(.locked) .letter{
+    background:var(--ink);
+    color:var(--gold-bright);
+    border-color:var(--ink);
+}
+
+.opt-text{ flex:1; }
+
+.mark{
+    width:18px;
+    flex-shrink:0;
+    text-align:left;
+    font-family:'Amiri',serif;
+    font-weight:700;
+    font-size:18px;
+    opacity:0;
+    transition:opacity .25s .1s;
+}
+
+.option-btn.correct{
+    background:linear-gradient(180deg, #4a7a55 0%, #3d6b48 100%);
+    border-color:#3d6b48;
+    color:#f4ede0;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.15),
+        0 20px 36px -22px rgba(61,107,72,1);
+    animation:pop .42s ease;
+}
+.option-btn.correct .letter{
+    background:rgba(255,255,255,.15);
+    color:#f0e4c0;
+    border-color:rgba(240,228,192,.55);
+}
+.option-btn.correct .mark{ opacity:1; color:#f0e4c0; }
+
+.option-btn.wrong{
+    background:linear-gradient(180deg, #a83e4d 0%, #8b2635 100%);
+    border-color:#8b2635;
+    color:#f4ede0;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 20px 36px -22px rgba(139,38,53,1);
+    animation:shake .42s ease;
+}
+.option-btn.wrong .letter{
+    background:rgba(255,255,255,.15);
+    color:#f0e4c0;
+    border-color:rgba(240,228,192,.55);
+}
+.option-btn.wrong .mark{ opacity:1; color:#f0e4c0; }
+
+.option-btn.locked{ cursor:default; }
+.option-btn.dim{ opacity:.38; filter:saturate(.55); }
+
+/* =========================================================
+   FEEDBACK BAR
+   ========================================================= */
+.feedback-area{
+    flex-shrink:0;
+    min-height:78px;
+    padding:16px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    border-top:1px solid rgba(168,130,58,.22);
+    background:linear-gradient(180deg, rgba(255,255,255,.6), rgba(250,242,220,.6));
+    position:relative;
+}
+
+.feedback-text{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Cairo',sans-serif;
+    font-size:14.5px;
+    font-weight:700;
+    letter-spacing:.2px;
+    opacity:0;
+    transform:translateY(6px);
+    transition:.35s cubic-bezier(.4,0,.2,1);
+}
+.feedback-text::before{
+    font-family:'Amiri',serif;
+    font-size:16px;
+    line-height:1;
+}
+.feedback-text.show{ opacity:1; transform:translateY(0); }
+.feedback-text.ok{ color:var(--ok); }
+.feedback-text.ok::before{ content:'✓'; }
+.feedback-text.bad{ color:var(--bad); }
+.feedback-text.bad::before{ content:'✕'; }
+
+.next-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 26px;
+    border:none;
+    border-radius:2px;
+    cursor:pointer;
+    font-family:'Cairo',sans-serif;
+    font-size:14.5px;
+    font-weight:800;
+    letter-spacing:.5px;
+    color:var(--gold-pale);
+    background:linear-gradient(180deg, var(--ink-soft), var(--ink));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 16px 28px -16px rgba(12,21,34,1);
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(8px);
+    transition:.35s cubic-bezier(.4,0,.2,1);
+    white-space:nowrap;
+}
+.next-btn.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+.next-btn:hover{
+    background:linear-gradient(180deg, #2c3f5c, #16243a);
+    transform:translateY(-2px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.15),
+        0 20px 34px -16px rgba(12,21,34,1);
+}
+.next-btn .arrow{ transition:transform .3s; font-size:17px; }
+.next-btn:hover .arrow{ transform:translateX(-5px); }
+
+/* Rationale panel — replaces the option grid after answering */
+.rationale{
+    display:none;
+    max-width:760px;
+    width:100%;
+    margin:0 auto;
+    animation:fadeUp .55s cubic-bezier(.22,1,.36,1) both;
+}
+.rationale.show{ display:block; }
+
+.rationale-inner{
+    position:relative;
+    padding:24px 26px 22px;
+    background:
+        radial-gradient(400px 220px at 20% 0%, rgba(212,175,90,.10), transparent 70%),
+        linear-gradient(180deg, #fffdf6 0%, #f8f0da 100%);
+    border:1px solid rgba(168,130,58,.4);
+    border-radius:2px;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.6),
+        0 22px 44px -28px rgba(168,130,58,.9);
+}
+.rationale-inner::before,
+.rationale-inner::after{
+    content:'';
+    position:absolute;
+    width:12px; height:12px;
+    border:1px solid var(--gold);
+}
+.rationale-inner::before{ top:-6px; right:-6px; border-left:none; border-bottom:none; }
+.rationale-inner::after{ bottom:-6px; left:-6px; border-right:none; border-top:none; }
+
+.rationale-label{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Cairo',sans-serif;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2.5px;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:14px;
+}
+.rationale-label::before{
+    content:'';
+    width:24px; height:1px;
+    background:var(--gold);
+}
+
+.rationale-decision{
+    font-family:'Amiri',serif;
+    font-size:20px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.6;
+    margin-bottom:16px;
+    padding-bottom:14px;
+    border-bottom:1px solid rgba(168,130,58,.22);
+}
+.rationale-decision .ok-word{
+    color:var(--ok);
+}
+
+.rationale-why{
+    font-family:'Tajawal',sans-serif;
+    font-size:14.5px;
+    line-height:1.9;
+    color:var(--ink-soft);
+    font-weight:500;
+}
+.rationale-why strong{
+    color:var(--gold);
+    font-weight:800;
+}
+
+/* =========================================================
+   RESULT SCREEN
+   ========================================================= */
+.result-screen{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:44px 30px;
+    background:
+        radial-gradient(600px 360px at 50% 0%, rgba(212,175,90,.12), transparent 72%),
+        transparent;
+}
+.result-screen.show{
+    display:flex;
+    animation:fadeUp .65s cubic-bezier(.22,1,.36,1) both;
+}
+
+.result-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Cairo',sans-serif;
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:3.5px;
+    color:var(--gold);
+    text-transform:uppercase;
+    padding:6px 4px;
+    margin-bottom:22px;
+}
+.result-eyebrow::before,
+.result-eyebrow::after{
+    content:'';
+    width:36px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold));
+}
+.result-eyebrow::after{
+    background:linear-gradient(90deg, var(--gold), transparent);
+}
+
+.seal-ring{
+    position:relative;
+    width:200px; height:200px;
+    margin-bottom:10px;
+}
+.seal-ring svg{
+    width:100%; height:100%;
+    transform:rotate(-90deg);
+    overflow:visible;
+}
+.seal-ring .ring-track{
+    fill:none;
+    stroke:rgba(168,130,58,.18);
+    stroke-width:1.5;
+}
+.seal-ring .ring-outer{
+    fill:none;
+    stroke:rgba(168,130,58,.35);
+    stroke-width:1;
+    stroke-dasharray:3 5;
+}
+.seal-ring .ring-fill{
+    fill:none;
+    stroke:url(#sealGrad);
+    stroke-width:5;
+    stroke-linecap:round;
+    stroke-dasharray:439.82;
+    stroke-dashoffset:439.82;
+    transition:stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1);
+    filter:drop-shadow(0 0 8px rgba(212,175,90,.5));
+}
+.seal-value{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    font-family:'Amiri',serif;
+    color:var(--ink);
+}
+.seal-value .num{
+    font-size:58px;
+    font-weight:700;
+    line-height:1;
+}
+.seal-value .den{
+    font-size:16px;
+    color:var(--sepia);
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    align-self:flex-end;
+    padding-bottom:12px;
+}
+
+.result-title{
+    font-family:'Amiri',serif;
+    font-size:30px;
+    font-weight:700;
+    color:var(--ink);
+    margin-top:16px;
+    line-height:1.3;
+}
+.result-divider{
+    width:70px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin:14px auto 12px;
+    position:relative;
+}
+.result-divider::after{
+    content:'✦';
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    background:var(--paper);
+    color:var(--gold);
+    font-size:9px;
+    padding:0 8px;
+    line-height:1;
+}
+.result-message{
+    font-size:16px;
+    color:var(--sepia);
+    line-height:1.9;
+    max-width:520px;
+    margin-bottom:8px;
+}
+
+.result-closing{
+    margin-top:18px;
+    padding:16px 22px;
+    max-width:560px;
+    border:1px solid rgba(168,130,58,.35);
+    border-right:3px solid var(--gold);
+    border-radius:2px;
+    background:rgba(255,255,255,.5);
+    font-family:'Amiri',serif;
+    font-size:15px;
+    font-style:italic;
+    line-height:1.85;
+    color:var(--ink-soft);
+    text-align:right;
+}
+.result-closing strong{
+    font-style:normal;
+    color:var(--gold);
+    font-weight:700;
+}
+
+.restart-btn{
+    margin-top:26px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 36px;
+    border:none;
+    border-radius:2px;
+    cursor:pointer;
+    font-family:'Cairo',sans-serif;
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:.5px;
+    color:#22190A;
+    background:linear-gradient(135deg, #d4af5a 0%, #b8923e 100%);
+    box-shadow:
+        0 20px 34px -18px rgba(168,130,58,.95),
+        inset 0 1px 0 rgba(255,255,255,.55);
+    transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s;
+}
+.restart-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:
+        0 28px 44px -18px rgba(168,130,58,1),
+        inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+.toast{
+    position:absolute;
+    left:50%; bottom:102px;
+    transform:translate(-50%,14px);
+    padding:10px 20px;
+    border-radius:2px;
+    background:var(--ink);
+    color:var(--gold-pale);
+    font-family:'Cairo',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.3px;
+    box-shadow:
+        inset 0 0 0 1px rgba(212,175,90,.35),
+        0 18px 36px -18px rgba(0,0,0,.9);
+    opacity:0;
+    pointer-events:none;
+    transition:.35s cubic-bezier(.4,0,.2,1);
+    z-index:30;
+    white-space:nowrap;
+}
+.toast.show{ opacity:1; transform:translate(-50%,0); }
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+@keyframes pop{
+    0%{ transform:scale(1); }
+    45%{ transform:scale(1.035); }
+    100%{ transform:scale(1); }
+}
+@keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-6px); }
+    45%{ transform:translateX(5px); }
+    70%{ transform:translateX(-3px); }
+}
+@keyframes fadeUp{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+.shake-card{ animation:shake .45s ease; }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width:760px){
+    body{ padding:0; }
+    .quiz-card{
+        width:100%;
+        height:100dvh;
+        border-radius:0;
+        box-shadow:none;
+        border:none;
+    }
+    .corner{ display:none; }
+    .quiz-header{ padding:14px 18px 13px; gap:10px; }
+    .brand-mark{ width:38px; height:38px; font-size:19px; }
+    .brand-text h1{ font-size:14.5px; }
+    .brand-text p{ font-size:11px; }
+    .dots{ display:none; }
+    .page-mark{ display:none; }
+    .score-chip{ padding:6px 11px; font-size:11px; }
+    .score-chip strong{ font-size:13.5px; }
+    .icon-btn{ width:34px; height:34px; font-size:14px; }
+    .question-area{ padding:22px 16px 20px; gap:20px; }
+    .question-text{ font-size:19px; }
+    .q-sub{ font-size:14px; }
+    .scenario{ padding:16px 18px; }
+    .scenario p{ font-size:13.5px; }
+    .options-grid{ grid-template-columns:1fr; gap:10px; }
+    .option-btn{ padding:13px 15px; font-size:14px; }
+    .letter{ width:28px; height:28px; font-size:13.5px; }
+    .feedback-area{ padding:13px 18px; min-height:70px; }
+    .feedback-text{ font-size:13px; }
+    .next-btn{ padding:10px 20px; font-size:13.5px; }
+    .start-overlay{ padding:30px 22px; }
+    .overlay-title{ font-size:28px; }
+    .overlay-sub{ font-size:14px; }
+    .overlay-note{ font-size:12px; padding:10px 14px; }
+    .rationale-inner{ padding:20px 20px 18px; }
+    .rationale-decision{ font-size:17px; }
+    .rationale-why{ font-size:13.5px; }
+    .seal-ring{ width:160px; height:160px; }
+    .seal-value .num{ font-size:46px; }
+    .result-title{ font-size:23px; }
+    .result-message{ font-size:14.5px; }
+    .result-closing{ font-size:13.5px; padding:14px 16px; }
+    .toast{ bottom:88px; font-size:11.5px; padding:9px 16px; }
+}
+
+@media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation-duration:.01ms !important;
+        transition-duration:.01ms !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-card" id="quizCard">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+
+    <!-- ===== START OVERLAY ===== -->
+    <div class="start-overlay" id="startOverlay">
+        <div class="overlay-ornament">⚖</div>
+        <div class="overlay-eyebrow">ورشة عمل تدريبية · الطفولة المبكرة</div>
+        <h1 class="overlay-title">غرفة اتخاذ القرار الأخلاقي</h1>
+        <div class="overlay-rule"></div>
+        <p class="overlay-sub">
+            ثلاثة مواقف ميدانية دقيقة قد تواجهينها فعليًا داخل قاعات رياض الأطفال —
+            لنختبر معًا <em>بوصلتكِ الأخلاقية</em>.
+        </p>
+        <div class="overlay-note">
+            <strong>ملاحظة:</strong> في كل موقف يوجد قرار أخلاقي واحد صحيح.
+            تأنّي قبل الاختيار، فالزمن الممنوح لكل سؤال هو <strong>25 ثانية</strong>.
+        </div>
+        <button class="start-btn" id="startBtn" type="button">
+            <span>ابدأي الجلسة</span>
+            <span class="arr">←</span>
+        </button>
+    </div>
+
+    <!-- ===== TIMER ===== -->
+    <div class="timer-track" id="timerTrack">
+        <div class="timer-fill" id="timerFill"></div>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="quiz-header" id="quizHeader">
+        <div class="brand">
+            <div class="brand-mark">⚖</div>
+            <div class="brand-text">
+                <h1>غرفة القرار الأخلاقي</h1>
+                <p>بحوث رياض الأطفال</p>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="page-mark" id="pageMark">١ / ٣</div>
+            <div class="dots" id="dots"></div>
+            <div class="score-chip">
+                <span>القرارات الصحيحة</span>
+                <strong id="score">0</strong>
+                <span class="total">/ 3</span>
+            </div>
+            <button class="icon-btn" id="soundBtn" type="button" aria-label="تشغيل/إيقاف الصوت">🔊</button>
+        </div>
+    </header>
+
+    <!-- ===== QUESTION ===== -->
+    <main class="question-area" id="questionArea">
+        <div class="question-block" id="questionBlock">
+            <span class="q-fleuron">✦ ✦ ✦</span>
+            <div id="kickerWrap"></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="scenario" id="scenarioBox" style="display:none;">
+                <p id="scenarioText"></p>
+            </div>
+        </div>
+
+        <div class="options-grid" id="optionsGrid"></div>
+
+        <div class="rationale" id="rationale">
+            <div class="rationale-inner">
+                <div class="rationale-label">مفتاح الإجابة والقرار</div>
+                <div class="rationale-decision" id="rationaleDecision"></div>
+                <p class="rationale-why" id="rationaleWhy"></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== FEEDBACK ===== -->
+    <footer class="feedback-area" id="feedbackArea">
+        <div class="feedback-text" id="feedbackText"></div>
+        <button class="next-btn" id="nextBtn" type="button">
+            <span>التالي</span>
+            <span class="arrow">←</span>
+        </button>
+    </footer>
+
+    <!-- ===== RESULT ===== -->
+    <section class="result-screen" id="resultScreen">
+        <div class="result-eyebrow">اكتملت الجلسة</div>
+
+        <div class="seal-ring">
+            <svg viewBox="0 0 160 160" aria-hidden="true">
+                <defs>
+                    <linearGradient id="sealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%"  stop-color="#a8823a"/>
+                        <stop offset="50%" stop-color="#d4af5a"/>
+                        <stop offset="100%" stop-color="#a8823a"/>
+                    </linearGradient>
+                </defs>
+                <circle class="ring-track"  cx="80" cy="80" r="70"/>
+                <circle class="ring-outer"  cx="80" cy="80" r="76"/>
+                <circle class="ring-fill"   id="ringFill" cx="80" cy="80" r="70"/>
+            </svg>
+            <div class="seal-value">
+                <span class="num" id="finalScore">0</span>
+                <span class="den">/ 3</span>
+            </div>
+        </div>
+
+        <h2 class="result-title" id="resultTitle"></h2>
+        <div class="result-divider"></div>
+        <p class="result-message" id="resultMessage"></p>
+
+        <div class="result-closing">
+            <strong>الباحث الناجح</strong> ليس من يحصل على بيانات غزيرة وسريعة فحسب،
+            بل هو <strong>الحارس الأمين</strong> لحقوق الطفل وسلامته النفسية والجسدية
+            أولًا وقبل كل اعتبار بحثي.
+        </div>
+
+        <button class="restart-btn" id="restartBtn" type="button">
+            <span>إعادة الجلسة</span>
+            <span>↻</span>
+        </button>
+    </section>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* =========================================================
+   SOUND ENGINE — fully synthesized (no audio files)
+   ========================================================= */
+const Sound = (() => {
+    let ctx = null;
+    let master = null;
+    let reverb = null;
+    let noiseBuffer = null;
+    let enabled = true;
+
+    function init() {
+        if (ctx) return;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+
+        ctx = new AC();
+
+        const comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -14;
+        comp.knee.value      = 24;
+        comp.ratio.value     = 8;
+        comp.attack.value    = 0.004;
+        comp.release.value   = 0.25;
+
+        master = ctx.createGain();
+        master.gain.value = 0.85;
+        master.connect(comp).connect(ctx.destination);
+
+        reverb = ctx.createConvolver();
+        reverb.buffer = makeImpulse(2.4, 3.0);
+        const wet = ctx.createGain();
+        wet.gain.value = 0.42;
+        reverb.connect(wet).connect(master);
+    }
+
+    function makeImpulse(duration, decay) {
+        const rate = ctx.sampleRate;
+        const len  = Math.floor(rate * duration);
+        const buf  = ctx.createBuffer(2, len, rate);
+        for (let ch = 0; ch < 2; ch++) {
+            const data = buf.getChannelData(ch);
+            for (let i = 0; i < len; i++) {
+                const t = i / len;
+                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, decay);
+            }
+        }
+        return buf;
+    }
+
+    function getNoise() {
+        if (!noiseBuffer) {
+            const len = Math.floor(ctx.sampleRate * 1.5);
+            noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+            const d = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+        }
+        return noiseBuffer;
+    }
+
+    function send(node, amount) {
+        if (!amount) return;
+        const g = ctx.createGain();
+        g.gain.value = amount;
+        node.connect(g);
+        g.connect(reverb);
+    }
+
+    function tone(o) {
+        if (!enabled || !ctx) return;
+        const {
+            freq, type = 'sine', at = 0, dur = 0.3, gain = 0.15,
+            attack = 0.006, glideTo = null, detune = 0,
+            cutoff = null, cutoffTo = null, q = 1, rev = 0
+        } = o;
+
+        const t0 = ctx.currentTime + at;
+        const osc = ctx.createOscillator();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, t0);
+        if (glideTo !== null) osc.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+        if (detune) osc.detune.setValueAtTime(detune, t0);
+
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(gain, t0 + attack);
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+        osc.connect(env);
+        let out = env;
+
+        if (cutoff !== null) {
+            const f = ctx.createBiquadFilter();
+            f.type = 'lowpass';
+            f.frequency.setValueAtTime(cutoff, t0);
+            if (cutoffTo !== null) f.frequency.exponentialRampToValueAtTime(cutoffTo, t0 + dur);
+            f.Q.value = q;
+            env.connect(f);
+            out = f;
+        }
+
+        out.connect(master);
+        send(out, rev);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.06);
+    }
+
+    function bell(freq, at, dur, gain, rev) {
+        if (!enabled || !ctx) return;
+        const t0 = ctx.currentTime + at;
+
+        const carrier = ctx.createOscillator();
+        carrier.type = 'sine';
+        carrier.frequency.value = freq;
+
+        const mod = ctx.createOscillator();
+        mod.type = 'sine';
+        mod.frequency.value = freq * 3.01;
+        const modAmt = ctx.createGain();
+        modAmt.gain.setValueAtTime(freq * 1.7, t0);
+        modAmt.gain.exponentialRampToValueAtTime(freq * 0.008, t0 + dur * 0.6);
+        mod.connect(modAmt).connect(carrier.frequency);
+
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(gain, t0 + 0.008);
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+        carrier.connect(env);
+        env.connect(master);
+        send(env, rev);
+
+        mod.start(t0);
+        carrier.start(t0);
+        mod.stop(t0 + dur + 0.06);
+        carrier.stop(t0 + dur + 0.06);
+    }
+
+    function noise(o) {
+        if (!enabled || !ctx) return;
+        const {
+            at = 0, dur = 0.15, gain = 0.08, type = 'bandpass',
+            freq = 2000, freqTo = null, q = 1, rev = 0
+        } = o;
+
+        const t0 = ctx.currentTime + at;
+        const src = ctx.createBufferSource();
+        src.buffer = getNoise();
+        src.loop = true;
+
+        const f = ctx.createBiquadFilter();
+        f.type = type;
+        f.frequency.setValueAtTime(freq, t0);
+        if (freqTo !== null) f.frequency.exponentialRampToValueAtTime(freqTo, t0 + dur);
+        f.Q.value = q;
+
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(gain, t0 + Math.min(0.02, dur * 0.3));
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+        src.connect(f).connect(env);
+        env.connect(master);
+        send(env, rev);
+
+        src.start(t0);
+        src.stop(t0 + dur + 0.06);
+    }
+
+    function unlock() {
+        init();
+        if (!ctx) return;
+        if (ctx.state === 'suspended') ctx.resume();
+        const b = ctx.createBufferSource();
+        b.buffer = ctx.createBuffer(1, 1, 22050);
+        b.connect(ctx.destination);
+        b.start(0);
+    }
+
+    return {
+        unlock,
+        isEnabled: () => enabled,
+        isReady:   () => !!ctx && ctx.state === 'running',
+        setEnabled(v) { enabled = v; if (v) unlock(); },
+
+        tick(urgent) {
+            if (!enabled || !ctx) return;
+            const base = urgent ? 1450 : 1020;
+            const vol  = urgent ? 0.055 : 0.032;
+            tone({ freq: base,       type: 'sine', dur: 0.085, gain: vol });
+            tone({ freq: base * 1.6, type: 'sine', dur: 0.045, gain: vol * 0.35 });
+            noise({ freq: 3200, q: 1.4, dur: 0.03, gain: vol * 0.8, rev: 0.08 });
+        },
+
+        correct() {
+            if (!enabled || !ctx) return;
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((f, i) => {
+                bell(f, i * 0.075, 1.35 - i * 0.12, 0.20 - i * 0.02, 0.55);
+            });
+            noise({ at: 0.02, dur: 0.55, gain: 0.045, freq: 2600, freqTo: 9000, q: 1.2, rev: 0.6 });
+            tone({ freq: 130.81, type: 'sine', dur: 0.5, gain: 0.09, rev: 0.2 });
+        },
+
+        wrong() {
+            if (!enabled || !ctx) return;
+            const t0 = ctx.currentTime;
+
+            [0, 8].forEach(det => {
+                const osc = ctx.createOscillator();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(196, t0);
+                osc.frequency.exponentialRampToValueAtTime(110, t0 + 0.42);
+                osc.detune.value = det;
+
+                const f = ctx.createBiquadFilter();
+                f.type = 'lowpass';
+                f.frequency.setValueAtTime(1100, t0);
+                f.frequency.exponentialRampToValueAtTime(300, t0 + 0.42);
+                f.Q.value = 5;
+
+                const env = ctx.createGain();
+                env.gain.setValueAtTime(0.0001, t0);
+                env.gain.exponentialRampToValueAtTime(0.11, t0 + 0.012);
+                env.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+
+                osc.connect(f).connect(env);
+                env.connect(master);
+                send(env, 0.18);
+                osc.start(t0);
+                osc.stop(t0 + 0.5);
+            });
+
+            tone({ freq: 110, glideTo: 55, type: 'sine', dur: 0.35, gain: 0.15 });
+        },
+
+        timeOut() {
+            if (!enabled || !ctx) return;
+            [392.00, 329.63, 261.63].forEach((f, i) => {
+                bell(f, i * 0.16, 1.05, 0.15, 0.5);
+            });
+            tone({ freq: 98, glideTo: 65, type: 'sine', at: 0.3, dur: 0.8, gain: 0.1, rev: 0.3 });
+        },
+
+        start() {
+            if (!enabled || !ctx) return;
+            noise({ dur: 0.6, gain: 0.035, freq: 400, freqTo: 3200, q: 0.9, rev: 0.5 });
+            bell(587.33, 0.04, 0.9, 0.13, 0.5);
+            bell(880.00, 0.16, 1.0, 0.11, 0.5);
+        },
+
+        finish() {
+            if (!enabled || !ctx) return;
+            [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                bell(f, i * 0.11, 1.5, 0.20, 0.6);
+            });
+            bell(1567.98, 0.44, 1.6, 0.10, 0.7);
+            noise({ at: 0.05, dur: 1.0, gain: 0.035, freq: 2200, freqTo: 9000, q: 1.2, rev: 0.7 });
+            tone({ freq: 130.81, type: 'sine', at: 0.4, dur: 0.9, gain: 0.10, rev: 0.3 });
+        }
+    };
+})();
+
+/* =========================================================
+   QUIZ DATA — three ethical dilemmas
+   ========================================================= */
+const questions = [
+    {
+        kicker: "الموقف الأول · معضلة تصوير الأطفال",
+        q: "هل تستمرين في التسجيل مستندةً إلى موافقة المعلمة، أم ماذا تفعلين؟",
+        scenario: "أثناء ملاحظة ركن اللعب التظاهري، قمتِ بتشغيل الكاميرا لتسجيل سلوكيات الأطفال. ظهر طفل يبكي بشدة رافضًا الظهور في الكاميرا، بينما أصرّت المعلمة قائلة: «صوّريه عادي، هذا طفل ولا يفهم، والفيديو مهم جدًا لنجاح بحثك!»",
+        options: [
+            "الاستمرار في التسجيل لأن المعلمة وافقت، والوالدان وافقا مسبقًا على المشاركة",
+            "إيقاف التسجيل فورًا لهذا الطفل واستبعاده من الكاميرا",
+            "تصويره من زاوية بعيدة دون أن يلاحظ حتى لا يتعطّل البحث",
+            "إخبار المعلمة بالمتابعة بعد أن يهدأ الطفل ثم إعادة التصوير"
+        ],
+        correct: 1,
+        decision: "إيقاف التسجيل فورًا لهذا الطفل واستبعاده من الكاميرا، احترامًا لرفضه وحالته النفسية.",
+        why: "حتى وإن وافق الوالدان مسبقًا، فإن مبدأ <strong>حماية الطفل من الأذى النفسي</strong>، و<strong>حق الانسحاب أو رفض المشاركة</strong>، يعلو على أي مصلحة بحثية أو رغبة إدارية. موافقة المعلمة لا تُغني عن موافقة الطفل المستمرة، خصوصًا مع ظهور علامات الضيق الواضحة."
+    },
+    {
+        kicker: "الموقف الثاني · الأسرار الأسرية المكتشفة",
+        q: "تذكري أنكِ قطعتِ وعدًا للطفل والروضة بسرية البيانات التامة. هل تحافظين على سرية المقابلة أم تتصرفين بطريقة أخرى؟",
+        scenario: "أثناء مقابلة قصيرة غير رسمية مع طفل عمره خمس سنوات ضمن دراسة عن البيئة الأسرية، أخبرك ببراءة شديدة وهو يبكي: «بابا يضرب ماما ويتركنا وحدنا بالبيت طوال الليل».",
+        options: [
+            "الحفاظ على السرية التامة كما وعدتِ الطفل والروضة، لأن هذا أساس البحث الأخلاقي",
+            "كسر السرية فورًا وإبلاغ الجهات المختصة بالحماية الأسرية وإدارة الروضة والمرشد الطلابي",
+            "إخبار المعلمة فقط دون إبلاغ أي جهة رسمية، احترامًا للسرية البحثية",
+            "تجاهل ما قاله الطفل لأنه قد يكون خيالًا طفوليًا ولا يمكن التحقق منه"
+        ],
+        correct: 1,
+        decision: "كسر السرية فورًا، وإبلاغ الجهات المختصة بالحماية الأسرية، وإدارة الروضة، والمرشد الطلابي.",
+        why: "حماية سلامة الطفل الجسدية والنفسية والتبليغ عن حالات الإيذاء <strong>تتجاوز مبدأ السرية البحثية</strong>. فالسرية مطلقة في الأمور العادية، لكنها تُخترق وجوبًا عند وجود <strong>خطر حقيقي يهدد حياة الطفل أو سلامته</strong>، ولا يجوز الاكتفاء بإخبار المعلمة فقط."
+    },
+    {
+        kicker: "الموقف الثالث · ضغط إدارة الروضة",
+        q: "هذا الإجراء سيضمن لكِ عيّنة كاملة بنسبة مئة بالمئة دون أي رفض. هل تقبلين بهذه الطريقة؟ ولماذا؟",
+        scenario: "أردتِ توزيع استمارات الموافقة على أولياء الأمور، فأرسلت إدارة الروضة تعميمًا إلزاميًا يهدد بأن تعبئة الاستمارة وتوقيعها <strong>شرط أساسي لتجديد تسجيل الطفل للعام القادم</strong>.",
+        options: [
+            "قبول الإجراء لأنه يضمن عيّنة كاملة وبيانات غزيرة بسرعة عالية",
+            "قبول الإجراء مع إخبار الأهالي شفهيًا بأن الأمر غير إلزامي في الواقع",
+            "رفض هذا الإجراء والتدخل لتعديله فورًا",
+            "تحويل الاستمارة إلى نموذج إلكتروني لتسهيل الأمر دون إثارة اعتراضات"
+        ],
+        correct: 2,
+        decision: "رفض هذا الإجراء والتدخل لتعديله فورًا.",
+        why: "هذا الإجراء يُعدّ <strong>إكراهًا</strong> واستغلالًا لموازين القوة، وخرقًا فاضحًا لمبدأ <strong>المشاركة التطوعية</strong>. يجب أن يُدرك ولي الأمر تمام الإدراك أن مشاركته أو رفضه <strong>لن يؤثر أبدًا</strong> على وضع طفله أو تعليمه في الروضة."
+    }
+];
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+const els = {
+    card:          document.getElementById('quizCard'),
+    startOverlay:  document.getElementById('startOverlay'),
+    startBtn:      document.getElementById('startBtn'),
+    timerTrack:    document.getElementById('timerTrack'),
+    timerFill:     document.getElementById('timerFill'),
+    header:        document.getElementById('quizHeader'),
+    pageMark:      document.getElementById('pageMark'),
+    dots:          document.getElementById('dots'),
+    score:         document.getElementById('score'),
+    soundBtn:      document.getElementById('soundBtn'),
+    questionArea:  document.getElementById('questionArea'),
+    questionBlock: document.getElementById('questionBlock'),
+    kickerWrap:    document.getElementById('kickerWrap'),
+    questionText:  document.getElementById('questionText'),
+    scenarioBox:   document.getElementById('scenarioBox'),
+    scenarioText:  document.getElementById('scenarioText'),
+    optionsGrid:   document.getElementById('optionsGrid'),
+    rationale:     document.getElementById('rationale'),
+    rationaleDecision: document.getElementById('rationaleDecision'),
+    rationaleWhy:  document.getElementById('rationaleWhy'),
+    feedbackArea:  document.getElementById('feedbackArea'),
+    feedbackText:  document.getElementById('feedbackText'),
+    nextBtn:       document.getElementById('nextBtn'),
+    resultScreen:  document.getElementById('resultScreen'),
+    resultTitle:   document.getElementById('resultTitle'),
+    resultMessage: document.getElementById('resultMessage'),
+    finalScore:    document.getElementById('finalScore'),
+    ringFill:      document.getElementById('ringFill'),
+    restartBtn:    document.getElementById('restartBtn'),
+    toast:         document.getElementById('toast')
+};
+
+const CIRC        = 2 * Math.PI * 70;
+const TIME_LIMIT  = 25;
+const LETTERS     = ['أ', 'ب', 'ج', 'د'];
+const ARABIC_NUMS = ['١','٢','٣'];
+
+let currentQ    = 0;
+let score       = 0;
+let answered    = false;
+let rafId       = null;
+let deadline    = 0;
+let lastTickSec = -1;
+let quizActive  = false;
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+let toastTimer;
+function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 3000);
+}
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+function startTimer() {
+    stopTimer();
+    const duration = TIME_LIMIT * 1000;
+    deadline = performance.now() + duration;
+    lastTickSec = TIME_LIMIT + 1;
+
+    els.timerFill.style.width = '100%';
+    els.timerFill.style.background =
+        'linear-gradient(90deg, #b8923e 0%, #d4af5a 60%, #e8d9a8 100%)';
+    els.timerFill.style.boxShadow = '0 0 10px rgba(212,175,90,.6)';
+
+    function frame(now) {
+        const remaining = Math.max(0, deadline - now);
+        const pct = (remaining / duration) * 100;
+        els.timerFill.style.width = pct + '%';
+
+        const secs = Math.ceil(remaining / 1000);
+        if (secs !== lastTickSec) {
+            lastTickSec = secs;
+            if (secs <= 5 && secs > 0) Sound.tick(true);
+            else if (secs <= 10 && secs > 5) Sound.tick(false);
+        }
+
+        if (remaining <= 5000) {
+            els.timerFill.style.background =
+                'linear-gradient(90deg, #8b2635 0%, #a83e4d 60%, #d68a92 100%)';
+            els.timerFill.style.boxShadow = '0 0 10px rgba(139,38,53,.7)';
+        } else if (remaining <= 10000) {
+            els.timerFill.style.background =
+                'linear-gradient(90deg, #a8823a 0%, #b8923e 60%, #d4af5a 100%)';
+            els.timerFill.style.boxShadow = '0 0 10px rgba(168,130,58,.6)';
+        }
+
+        if (remaining <= 0) { rafId = null; timeOut(); return; }
+        rafId = requestAnimationFrame(frame);
+    }
+    rafId = requestAnimationFrame(frame);
+}
+
+function stopTimer() {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function renderDots() {
+    els.dots.innerHTML = '';
+    questions.forEach((_, i) => {
+        const d = document.createElement('span');
+        d.className = 'dot' +
+            (i === currentQ ? ' active' : i < currentQ ? ' done' : '');
+        els.dots.appendChild(d);
+    });
+}
+
+function loadQuestion() {
+    const q = questions[currentQ];
+    answered = false;
+
+    renderDots();
+    els.pageMark.textContent =
+        ARABIC_NUMS[currentQ] + ' / ' + ARABIC_NUMS[questions.length - 1];
+
+    els.kickerWrap.innerHTML =
+        `<div class="q-kicker"><span class="seal-dot"></span>${q.kicker}</div>`;
+
+    els.questionText.textContent = q.q;
+
+    els.scenarioText.innerHTML = q.scenario;
+    els.scenarioBox.style.display = 'block';
+
+    els.optionsGrid.className = 'options-grid' + (q.options.length === 4 ? '' : ' single');
+    els.optionsGrid.innerHTML = '';
+
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.innerHTML =
+            `<span class="letter">${LETTERS[i]}</span>` +
+            `<span class="opt-text">${opt}</span>` +
+            `<span class="mark"></span>`;
+        btn.addEventListener('click', () => selectAnswer(i, btn));
+        els.optionsGrid.appendChild(btn);
+    });
+
+    els.feedbackText.className = 'feedback-text';
+    els.feedbackText.textContent = '';
+    els.nextBtn.classList.remove('show');
+    els.rationale.classList.remove('show');
+    els.optionsGrid.style.display = '';
+
+    startTimer();
+}
+
+/* =========================================================
+   ANSWER HANDLING
+   ========================================================= */
+function setMark(btn, ch) {
+    const m = btn.querySelector('.mark');
+    if (m) m.textContent = ch;
+}
+
+function showFeedback(text, type) {
+    els.feedbackText.textContent = text;
+    els.feedbackText.className = 'feedback-text show ' + type;
+}
+
+function shakeCard() {
+    els.card.classList.remove('shake-card');
+    void els.card.offsetWidth;
+    els.card.classList.add('shake-card');
+    setTimeout(() => els.card.classList.remove('shake-card'), 500);
+}
+
+function revealRationale() {
+    const q = questions[currentQ];
+    els.rationaleDecision.textContent = q.decision;
+    els.rationaleWhy.innerHTML = q.why;
+    els.rationale.classList.add('show');
+    els.optionsGrid.style.display = 'none';
+}
+
+function selectAnswer(index, btn) {
+    if (answered || !quizActive) return;
+    answered = true;
+    stopTimer();
+
+    const q = questions[currentQ];
+    const all = [...els.optionsGrid.querySelectorAll('.option-btn')];
+    all.forEach(b => b.classList.add('locked'));
+
+    if (index === q.correct) {
+        btn.classList.add('correct');
+        setMark(btn, '✓');
+        score++;
+        els.score.textContent = score;
+        showFeedback('قرار سليم أخلاقيًا، أحسنتِ', 'ok');
+        Sound.correct();
+    } else {
+        btn.classList.add('wrong');
+        setMark(btn, '✕');
+
+        const correctBtn = all[q.correct];
+        correctBtn.classList.add('correct');
+        setMark(correctBtn, '✓');
+
+        showFeedback('قرار غير سليم — راجعي مفتاح الإجابة', 'bad');
+        Sound.wrong();
+        shakeCard();
+    }
+
+    all.forEach((b, i) => {
+        if (i !== index && i !== q.correct) b.classList.add('dim');
+    });
+
+    setTimeout(revealRationale, 650);
+
+    els.nextBtn.classList.add('show');
+    els.nextBtn.focus({ preventScroll: true });
+}
+
+function timeOut() {
+    if (answered) return;
+    answered = true;
+
+    const q = questions[currentQ];
+    const all = [...els.optionsGrid.querySelectorAll('.option-btn')];
+    all.forEach(b => b.classList.add('locked'));
+
+    const correctBtn = all[q.correct];
+    correctBtn.classList.add('correct');
+    setMark(correctBtn, '✓');
+
+    all.forEach((b, i) => { if (i !== q.correct) b.classList.add('dim'); });
+
+    showFeedback('انتهى الوقت', 'bad');
+    Sound.timeOut();
+    shakeCard();
+
+    setTimeout(revealRationale, 650);
+
+    els.nextBtn.classList.add('show');
+}
+
+/* =========================================================
+   NAVIGATION & RESULTS
+   ========================================================= */
+function nextQuestion() {
+    currentQ++;
+    if (currentQ < questions.length) loadQuestion();
+    else showResults();
+}
+
+function showResults() {
+    stopTimer();
+    quizActive = false;
+
+    els.header.style.display = 'none';
+    els.questionArea.style.display = 'none';
+    els.feedbackArea.style.display = 'none';
+    els.timerTrack.style.display = 'none';
+
+    els.resultScreen.classList.add('show');
+    els.finalScore.textContent = score;
+
+    els.ringFill.style.strokeDashoffset = CIRC;
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            els.ringFill.style.strokeDashoffset =
+                CIRC * (1 - score / questions.length);
+        }, 180);
+    });
+
+    let title, msg;
+    if (score === 3) {
+        title = 'بوصلة أخلاقية دقيقة 🌟';
+        msg = 'التزمتِ بالمبادئ الأخلاقية الثلاثة في مواجهة ضغط الميدان. هذا هو المستوى المطلوب من الباحث في الطفولة المبكرة.';
+    } else if (score === 2) {
+        title = 'قراراتكِ في الطريق الصحيح 💪';
+        msg = 'أحسنتِ في أغلب المواقف، وبقيت مراجعة مبدأ واحد لتكتمل البوصلة.';
+    } else if (score === 1) {
+        title = 'بداية تحتاج مراجعة 📚';
+        msg = 'القرارات الأخلاقية في بحوث الأطفال تحتاج تدريبًا مستمرًا. أعيدي قراءة مفتاح الإجابة لكل موقف.';
+    } else {
+        title = 'راجعي المبادئ الأخلاقية 🧭';
+        msg = 'لا بأس — المهم أن تعودي للشرائح وتعيدي المحاولة بعد استيعاب مبدأ حماية الطفل أولًا.';
+    }
+    els.resultTitle.textContent = title;
+    els.resultMessage.textContent = msg;
+
+    Sound.finish();
+}
+
+function restartQuiz() {
+    currentQ = 0;
+    score = 0;
+    answered = false;
+    quizActive = true;
+
+    els.score.textContent = '0';
+    els.ringFill.style.strokeDashoffset = CIRC;
+    els.resultScreen.classList.remove('show');
+
+    els.header.style.display = '';
+    els.questionArea.style.display = '';
+    els.feedbackArea.style.display = '';
+    els.timerTrack.style.display = '';
+
+    Sound.start();
+    loadQuestion();
+}
+
+/* =========================================================
+   START
+   ========================================================= */
+function beginQuiz() {
+    Sound.unlock();
+    quizActive = true;
+
+    setTimeout(() => Sound.start(), 60);
+
+    els.startOverlay.classList.add('gone');
+    setTimeout(() => { els.startOverlay.style.display = 'none'; }, 650);
+
+    loadQuestion();
+}
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+els.startBtn.addEventListener('click', beginQuiz);
+els.nextBtn.addEventListener('click', nextQuestion);
+els.restartBtn.addEventListener('click', restartQuiz);
+
+els.soundBtn.addEventListener('click', () => {
+    const on = !Sound.isEnabled();
+    Sound.setEnabled(on);
+    els.soundBtn.textContent = on ? '🔊' : '🔇';
+    els.soundBtn.classList.toggle('off', !on);
+    if (on) {
+        Sound.unlock();
+        setTimeout(() => Sound.tick(false), 40);
+        toast('تم تشغيل الصوت');
+    } else {
+        toast('تم كتم الصوت');
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (!quizActive) {
+        if (e.key === 'Enter' && !els.startOverlay.classList.contains('gone')) {
+            els.startBtn.click();
+        }
+        return;
+    }
+
+    if (els.resultScreen.classList.contains('show')) {
+        if (e.key === 'Enter') restartQuiz();
+        return;
+    }
+
+    if (!answered) {
+        const map = { '1': 0, '2': 1, '3': 2, '4': 3,
+                      '١': 0, '٢': 1, '٣': 2, '٤': 3 };
+        if (e.key in map) {
+            const btn = els.optionsGrid.querySelectorAll('.option-btn')[map[e.key]];
+            if (btn) btn.click();
+        }
+    } else if (e.key === 'Enter' || e.key === ' ') {
+        if (els.nextBtn.classList.contains('show')) {
+            e.preventDefault();
+            nextQuestion();
+        }
+    }
+});
+
+['pointerdown', 'keydown', 'touchstart'].forEach(ev => {
+    window.addEventListener(ev, () => Sound.unlock(),
+        { once: true, capture: true, passive: true });
+});
+</script>
+</body>
+</html>

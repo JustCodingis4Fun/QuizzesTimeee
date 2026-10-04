@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>استراتيجيات الكتابة · سماح</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --ink: #1e293b; --ink-deep: #0f172a; --ink-soft: #334155;
+    --paper: #ffffff; --paper-deep: #f8fafc; 
+    --sepia: #64748b; 
+    --ok: #22c55e; --ok-shadow: #16a34a;
+    --bad: #ef4444; --bad-shadow: #dc2626;
+
+    --theme-accent: #4a7ab5;
+    --theme-accent-bright: #7aa5d5;
+    --theme-shadow: #3b6291;
+    --theme-glow: rgba(74,122,181,0.15);
+    --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+    min-height: 100dvh; display: grid; place-items: center;
+    padding: 20px; font-family: 'Tajawal', sans-serif;
+    color: var(--ink); 
+    background: var(--bg-gradient);
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    transition: background 0.8s ease;
+    position: relative;
+}
+
+/* =========================================================
+   PAGE BACKGROUND ENHANCEMENTS (Academic Floating Motifs)
+   ========================================================= */
+.bg-decorations {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    overflow: hidden;
+}
+.bg-icon {
+    position: absolute;
+    color: var(--theme-accent);
+    opacity: 0.12;
+    transition: color 0.8s ease;
+}
+.bg-icon svg { width: 100%; height: 100%; }
+
+.icon-1 { top: 8%; right: 6%; width: 140px; animation: floatIcon 18s infinite alternate ease-in-out; }
+.icon-2 { top: 65%; right: 12%; width: 180px; animation: floatIcon 24s infinite alternate-reverse ease-in-out; }
+.icon-3 { top: 15%; left: 8%; width: 120px; animation: floatIcon 20s infinite alternate ease-in-out; }
+.icon-4 { top: 75%; left: 10%; width: 160px; animation: floatIcon 22s infinite alternate-reverse ease-in-out; }
+.icon-5 { top: 40%; left: 85%; width: 100px; animation: floatIcon 16s infinite alternate ease-in-out; }
+.icon-6 { top: 50%; right: 88%; width: 130px; animation: floatIcon 19s infinite alternate-reverse ease-in-out; }
+
+@keyframes floatIcon {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(15px, -20px) rotate(5deg); }
+    66% { transform: translate(-10px, 15px) rotate(-3deg); }
+    100% { transform: translate(-25px, -10px) rotate(8deg); }
+}
+
+#ideaNetwork { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.3; }
+
+/* =========================================================
+   QUIZ CARD ENHANCEMENTS (Notebook Grid & Watermarks)
+   ========================================================= */
+.quiz-card {
+    position: relative; z-index: 10;
+    width: min(880px, 100%); height: min(780px, 94dvh);
+    border-radius: 32px;
+    background-color: var(--paper);
+    /* Layered Background: Glow + Grid Pattern */
+    background-image: 
+        radial-gradient(circle at 0% 100%, var(--theme-glow), transparent 70%),
+        radial-gradient(circle at 100% 0%, var(--theme-glow), transparent 70%),
+        url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%2394a3b8' fill-opacity='0.25'/%3E%3C/svg%3E");
+    background-size: auto, auto, 24px 24px;
+    border: 4px solid #fff;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column; overflow: hidden;
+    transition: box-shadow 0.6s ease;
+}
+
+/* Card Watermark */
+.card-watermark {
+    position: absolute; bottom: -30px; left: -40px;
+    width: 350px; height: 350px;
+    color: var(--theme-accent);
+    opacity: 0.04;
+    pointer-events: none; z-index: 0;
+    transform: rotate(-15deg);
+    transition: color 0.8s ease;
+}
+.card-watermark svg { width: 100%; height: 100%; }
+
+/* HEADER */
+.quiz-header {
+    flex-shrink: 0; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+    border-bottom: 2px solid #f1f5f9; z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand-mark {
+    width: 54px; height: 54px; flex-shrink: 0;
+    display: grid; place-items: center; border-radius: 16px;
+    color: #fff; background: var(--theme-accent);
+    box-shadow: 0 6px 0 var(--theme-shadow);
+    transition: all 0.5s;
+}
+.brand-mark svg { width: 32px; height: 32px; }
+.brand-text h1 { font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 800; color: var(--ink-deep); line-height: 1.2; }
+.brand-text p { font-size: 14px; color: var(--sepia); font-weight: 600; }
+
+.header-right { display: flex; align-items: center; gap: 20px; }
+.progress-container { display: flex; align-items: center; gap: 6px; }
+.dot {
+    width: 10px; height: 10px; border-radius: 5px;
+    background: #e2e8f0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.dot.done { background: var(--theme-accent-bright); }
+.dot.active { width: 28px; background: var(--theme-accent); box-shadow: 0 0 12px var(--theme-glow); }
+
+.score-chip {
+    padding: 8px 16px; border-radius: 14px;
+    background: #f8fafc; color: var(--ink); border: 2px solid #e2e8f0;
+    font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
+}
+.score-chip strong { color: var(--theme-accent); font-size: 20px; }
+
+/* TACTILE ICON BUTTON */
+.icon-btn {
+    width: 48px; height: 48px; border-radius: 14px;
+    border: 2px solid #e2e8f0; background: #fff;
+    box-shadow: 0 4px 0 #e2e8f0; cursor: pointer;
+    font-size: 20px; display: grid; place-items: center;
+    transition: all 0.1s;
+}
+.icon-btn:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+.icon-btn.off { opacity: 0.5; filter: grayscale(1); }
+
+/* TIMER */
+.timer-track {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 6px; background: rgba(226, 232, 240, 0.5); z-index: 15;
+}
+.timer-fill {
+    height: 100%; width: 100%;
+    background: var(--theme-accent);
+    box-shadow: 0 0 10px var(--theme-accent);
+    transition: background 0.4s;
+}
+
+/* QUESTION AREA */
+.question-area {
+    flex: 1; padding: 30px 40px; display: flex; flex-direction: column; 
+    align-items: center; justify-content: center; gap: 24px;
+    position: relative; overflow-y: auto; z-index: 2;
+}
+
+/* ILLUSTRATION */
+.art-showcase {
+    position: relative; width: 160px; height: 160px;
+    display: grid; place-items: center; margin-bottom: -10px;
+}
+.art-showcase::after {
+    content: ''; position: absolute; inset: 20px; border-radius: 50%;
+    background: var(--theme-glow); filter: blur(20px); z-index: 0;
+}
+.theme-art {
+    width: 130px; height: 130px; z-index: 1;
+    color: var(--theme-accent);
+    filter: drop-shadow(0 15px 25px var(--theme-glow));
+    animation: floatCardArt 5s ease-in-out infinite;
+}
+.theme-art svg { width: 100%; height: 100%; }
+
+@keyframes floatCardArt {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.03); }
+}
+
+.theme-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 18px; border-radius: 20px;
+    background: rgba(255, 255, 255, 0.9); border: 2px solid var(--theme-accent);
+    color: var(--theme-accent); font-family: 'Cairo', sans-serif;
+    font-size: 14px; font-weight: 800;
+}
+
+.question-block { text-align: center; max-width: 720px; width: 100%; position: relative; z-index: 1; }
+.question-text {
+    font-family: 'Amiri', serif; font-size: 34px; font-weight: 700;
+    color: var(--ink-deep); line-height: 1.6;
+}
+.q-sub { display: block; margin-top: 12px; font-size: 18px; font-weight: 600; color: var(--sepia); }
+
+/* TACTILE OPTIONS */
+.options-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 20px; width: 100%; max-width: 800px; position: relative; z-index: 1;
+}
+.options-grid.single { grid-template-columns: 1fr; max-width: 600px; }
+
+.option-btn {
+    position: relative; display: flex; align-items: center; gap: 16px;
+    padding: 20px; border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95); border: 2px solid #cbd5e1;
+    box-shadow: 0 6px 0 #cbd5e1;
+    font-family: 'Tajawal', sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--ink); text-align: right; cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s, border 0.2s, background 0.2s;
+}
+.option-btn:hover:not(.locked) {
+    transform: translateY(2px); box-shadow: 0 4px 0 #94a3b8; border-color: #94a3b8;
+}
+.option-btn:active:not(.locked) {
+    transform: translateY(6px); box-shadow: 0 0 0 transparent;
+}
+.option-btn.locked { cursor: default; }
+
+.letter {
+    width: 44px; height: 44px; flex-shrink: 0;
+    display: grid; place-items: center; border-radius: 14px;
+    font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 900;
+    color: var(--theme-accent); background: var(--theme-glow);
+}
+.opt-text { flex: 1; line-height: 1.5; }
+.mark {
+    width: 28px; font-family: 'Cairo', sans-serif; font-size: 24px; font-weight: 900;
+    opacity: 0; transform: scale(0.5); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ANSWER STATES */
+.option-btn.correct {
+    background: #f0fdf4; border-color: var(--ok); color: var(--ok-shadow);
+    box-shadow: 0 6px 0 var(--ok-shadow);
+    animation: popOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.option-btn.correct .letter { background: var(--ok); color: #fff; }
+.option-btn.correct .mark { opacity: 1; transform: scale(1); color: var(--ok); }
+
+.option-btn.wrong {
+    background: #fef2f2; border-color: var(--bad); color: var(--bad-shadow);
+    box-shadow: 0 6px 0 var(--bad-shadow);
+    animation: shake 0.4s ease;
+}
+.option-btn.wrong .letter { background: var(--bad); color: #fff; }
+.option-btn.wrong .mark { opacity: 1; transform: scale(1); color: var(--bad); }
+.option-btn.dim { opacity: 0.5; filter: grayscale(1); transform: scale(0.98); box-shadow: 0 2px 0 #cbd5e1; }
+
+/* FEEDBACK FOOTER */
+.feedback-area {
+    padding: 24px 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+    background: rgba(248, 250, 252, 0.9); backdrop-filter: blur(12px);
+    border-top: 2px solid #e2e8f0; z-index: 10;
+}
+.feedback-text {
+    font-family: 'Cairo', sans-serif; font-size: 18px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; transform: translateX(20px); transition: all 0.4s;
+}
+.feedback-text.show { opacity: 1; transform: translateX(0); }
+.feedback-text.ok { color: var(--ok-shadow); }
+.feedback-text.bad { color: var(--bad-shadow); }
+
+.tactile-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 16px 36px; border: none; border-radius: 16px; cursor: pointer;
+    font-family: 'Cairo', sans-serif; font-size: 18px; font-weight: 800; color: #fff;
+    background: var(--ink); box-shadow: 0 6px 0 var(--ink-deep);
+    transition: all 0.1s; opacity: 0; pointer-events: none; transform: translateY(10px);
+}
+.tactile-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.tactile-btn:active { transform: translateY(6px) !important; box-shadow: 0 0 0 transparent !important; }
+.tactile-btn.primary { background: var(--theme-accent); box-shadow: 0 6px 0 var(--theme-shadow); }
+
+/* OVERLAYS */
+.overlay-screen {
+    position: absolute; inset: 0; z-index: 50;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
+    text-align: center; padding: 40px; transition: opacity 0.5s, visibility 0.5s;
+}
+.overlay-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.seal-ring { position: relative; width: 220px; height: 220px; margin-bottom: 24px; }
+.seal-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-track { fill: none; stroke: #f1f5f9; stroke-width: 10; }
+.ring-fill {
+    fill: none; stroke: var(--theme-accent); stroke-width: 10; stroke-linecap: round;
+    stroke-dasharray: 628; stroke-dashoffset: 628;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1);
+    filter: drop-shadow(0 4px 10px var(--theme-glow));
+}
+.seal-value {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-family: 'Cairo', sans-serif;
+}
+.seal-value .num { font-size: 72px; font-weight: 900; color: var(--ink-deep); line-height: 1; }
+.seal-value .den { font-size: 20px; font-weight: 700; color: var(--sepia); margin-top: 4px; }
+
+/* ANIMATIONS */
+@keyframes popOut { 0% { transform: scale(1); } 40% { transform: scale(1.03); } 100% { transform: scale(1); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
+    .quiz-card { border-radius: 0; height: 100dvh; border: none; }
+    .options-grid { grid-template-columns: 1fr; gap: 14px; }
+    .question-text { font-size: 26px; }
+    .art-showcase { width: 120px; height: 120px; }
+    .theme-art { width: 100px; height: 100px; }
+    .quiz-header { padding: 16px 20px; }
+    .question-area { padding: 20px; }
+    .card-watermark { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Floating Academic SVGs for the Page Background -->
+<div class="bg-decorations">
+    <!-- Book -->
+    <div class="bg-icon icon-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+    </div>
+    <!-- Quill Pen -->
+    <div class="bg-icon icon-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+            <line x1="16" y1="8" x2="2" y2="22"></line>
+            <line x1="17.5" y1="15" x2="9" y2="15"></line>
+        </svg>
+    </div>
+    <!-- Graduation Cap -->
+    <div class="bg-icon icon-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+    </div>
+    <!-- Globe -->
+    <div class="bg-icon icon-4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+    </div>
+    <!-- Compass/Geometry -->
+    <div class="bg-icon icon-5">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="2"></circle>
+            <path d="M12 7v14"></path><path d="M9 21l3-14"></path><path d="M15 21l-3-14"></path><path d="M8 15h8"></path>
+        </svg>
+    </div>
+    <!-- Atom / Science -->
+    <div class="bg-icon icon-6">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .11 1.89l1.8 2a2 2 0 0 1-2.83 2.83l-2-1.8a1.65 1.65 0 0 0-1.89-.11"></path>
+            <path d="M4.6 9a1.65 1.65 0 0 0-.11-1.89l-1.8-2a2 2 0 0 1 2.83-2.83l2 1.8a1.65 1.65 0 0 0 1.89.11"></path>
+            <path d="M19.4 9a1.65 1.65 0 0 1-.11-1.89l1.8-2a2 2 0 0 0-2.83-2.83l-2 1.8a1.65 1.65 0 0 1-1.89.11"></path>
+            <path d="M4.6 15a1.65 1.65 0 0 1 .11 1.89l-1.8 2a2 2 0 1 0 2.83 2.83l2-1.8a1.65 1.65 0 0 1 1.89-.11"></path>
+        </svg>
+    </div>
+</div>
+
+<canvas id="ideaNetwork"></canvas>
+
+<div class="quiz-card" id="quizCard">
+    <!-- Huge Watermark Inside the Card -->
+    <div class="card-watermark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+    </div>
+
+    <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+
+    <header class="quiz-header" id="quizHeader">
+        <div class="brand">
+            <div class="brand-mark" id="emblemMark"></div>
+            <div class="brand-text">
+                <h1>استراتيجيات الكتابة</h1>
+                <p>الجزء الأول · سماح</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="progress-container" id="dots"></div>
+            <div class="score-chip"><strong id="score">0</strong> / 5</div>
+            <button class="icon-btn" id="soundBtn" title="كتم/تشغيل الصوت">🔊</button>
+        </div>
+    </header>
+
+    <main class="question-area" id="questionArea">
+        <div class="art-showcase">
+            <div class="theme-art" id="themeArtMain"></div>
+        </div>
+        
+        <div class="theme-badge" id="themeBadge">
+            <span id="themeIcon">⌘</span>
+            <span id="themeLabel">المخطط</span>
+        </div>
+
+        <div class="question-block" id="questionBlock">
+            <div class="question-text" id="questionText"></div>
+        </div>
+        <div class="options-grid" id="optionsGrid"></div>
+    </main>
+
+    <footer class="feedback-area" id="feedbackArea">
+        <div class="feedback-text" id="feedbackText"></div>
+        <button class="tactile-btn" id="nextBtn">
+            <span>التالي</span> <span>←</span>
+        </button>
+    </footer>
+
+    <!-- START OVERLAY -->
+    <div class="overlay-screen" id="startOverlay">
+        <div class="art-showcase" style="margin-bottom: 30px;">
+            <svg viewBox="0 0 240 240" fill="none" stroke="var(--theme-accent)" stroke-width="3" style="width:140px; height:140px;">
+                <rect x="60" y="55" width="120" height="150" rx="10"/>
+                <path d="M60 75 Q42 75 42 95 Q42 115 60 115" />
+                <path d="M180 75 Q198 75 198 95 Q198 115 180 115" />
+                <line x1="85" y1="90" x2="155" y2="90"/><line x1="85" y1="112" x2="155" y2="112"/>
+                <path d="M148 210 Q172 180 196 158 Q206 152 214 150 Q212 158 206 166 Q182 190 158 212 Z" fill="currentColor" fill-opacity="0.2"/>
+            </svg>
+        </div>
+        <h1 style="font-family:'Amiri', serif; font-size:48px; color:var(--ink-deep); margin-bottom:12px;">استراتيجيات الكتابة</h1>
+        <p style="font-size:20px; color:var(--sepia); margin-bottom: 40px; max-width: 440px; line-height: 1.6;">خمسة أسئلة تفاعلية في تطوير الكتابة، والربط المنطقي، وترتيب الأفكار.</p>
+        <button class="tactile-btn primary show" id="startBtn">ابـدئي الاختبـار <span>←</span></button>
+    </div>
+
+    <!-- RESULT OVERLAY -->
+    <div class="overlay-screen hidden" id="resultScreen">
+        <div class="seal-ring">
+            <svg viewBox="0 0 220 220">
+                <circle class="ring-track" cx="110" cy="110" r="100"/>
+                <circle class="ring-fill" id="ringFill" cx="110" cy="110" r="100"/>
+            </svg>
+            <div class="seal-value">
+                <span class="num" id="finalScore">0</span>
+                <span class="den">من 5</span>
+            </div>
+        </div>
+        <h2 style="font-family:'Amiri', serif; font-size:42px; margin-top:20px;" id="resultTitle">انتهى الاختبار! 🎉</h2>
+        <p style="font-size:20px; color:var(--sepia); margin: 16px 0 40px; max-width:440px;" id="resultMessage"></p>
+        <button class="tactile-btn primary show" id="restartBtn">إعادة الاختبار <span>↻</span></button>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   SOUND ENGINE
+   ========================================================= */
+const Sound = (() => {
+    let ctx = null, master = null, reverb = null, noiseBuffer = null, enabled = true;
+    function init(){
+        if (ctx) return;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        ctx = new AC();
+        const comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -14; comp.knee.value = 24; comp.ratio.value = 8;
+        comp.attack.value = 0.004; comp.release.value = 0.25;
+        master = ctx.createGain(); master.gain.value = 0.85;
+        master.connect(comp).connect(ctx.destination);
+        reverb = ctx.createConvolver(); reverb.buffer = makeImpulse(2.4, 3.0);
+        const wet = ctx.createGain(); wet.gain.value = 0.42;
+        reverb.connect(wet).connect(master);
+    }
+    function makeImpulse(duration, decay){
+        const rate = ctx.sampleRate, len = Math.floor(rate*duration);
+        const buf = ctx.createBuffer(2, len, rate);
+        for (let ch = 0; ch < 2; ch++){
+            const data = buf.getChannelData(ch);
+            for (let i = 0; i < len; i++){
+                const t = i/len;
+                data[i] = (Math.random()*2 - 1) * Math.pow(1 - t, decay);
+            }
+        }
+        return buf;
+    }
+    function getNoise(){
+        if (!noiseBuffer){
+            const len = Math.floor(ctx.sampleRate * 1.5);
+            noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+            const d = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < len; i++) d[i] = Math.random()*2 - 1;
+        }
+        return noiseBuffer;
+    }
+    function send(node, amount){
+        if (!amount) return;
+        const g = ctx.createGain(); g.gain.value = amount;
+        node.connect(g); g.connect(reverb);
+    }
+    function tone(o){
+        if (!enabled || !ctx) return;
+        const { freq, type = 'sine', at = 0, dur = 0.3, gain = 0.15,
+                attack = 0.006, glideTo = null, detune = 0,
+                cutoff = null, cutoffTo = null, q = 1, rev = 0 } = o;
+        const t0 = ctx.currentTime + at;
+        const osc = ctx.createOscillator();
+        osc.type = type; osc.frequency.setValueAtTime(freq, t0);
+        if (glideTo !== null) osc.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+        if (detune) osc.detune.setValueAtTime(detune, t0);
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(gain, t0 + attack);
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        osc.connect(env);
+        let out = env;
+        if (cutoff !== null){
+            const f = ctx.createBiquadFilter();
+            f.type = 'lowpass';
+            f.frequency.setValueAtTime(cutoff, t0);
+            if (cutoffTo !== null) f.frequency.exponentialRampToValueAtTime(cutoffTo, t0 + dur);
+            f.Q.value = q; env.connect(f); out = f;
+        }
+        out.connect(master); send(out, rev);
+        osc.start(t0); osc.stop(t0 + dur + 0.06);
+    }
+    function bell(freq, at, dur, gain, rev){
+        if (!enabled || !ctx) return;
+        const t0 = ctx.currentTime + at;
+        const carrier = ctx.createOscillator();
+        carrier.type = 'sine'; carrier.frequency.value = freq;
+        const mod = ctx.createOscillator();
+        mod.type = 'sine'; mod.frequency.value = freq * 3.01;
+        const modAmt = ctx.createGain();
+        modAmt.gain.setValueAtTime(freq*1.7, t0);
+        modAmt.gain.exponentialRampToValueAtTime(freq*0.008, t0 + dur*0.6);
+        mod.connect(modAmt).connect(carrier.frequency);
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(gain, t0 + 0.008);
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        carrier.connect(env); env.connect(master); send(env, rev);
+        mod.start(t0); carrier.start(t0);
+        mod.stop(t0 + dur + 0.06); carrier.stop(t0 + dur + 0.06);
+    }
+    function noise(o){
+        if (!enabled || !ctx) return;
+        const { at = 0, dur = 0.15, gain = 0.08, type = 'bandpass',
+                freq = 2000, freqTo = null, q = 1, rev = 0 } = o;
+        const t0 = ctx.currentTime + at;
+        const src = ctx.createBufferSource();
+        src.buffer = getNoise(); src.loop = true;
+        const f = ctx.createBiquadFilter();
+        f.type = type; f.frequency.setValueAtTime(freq, t0);
+        if (freqTo !== null) f.frequency.exponentialRampToValueAtTime(freqTo, t0 + dur);
+        f.Q.value = q;
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.0001, t0);
+        env.gain.exponentialRampToValueAtTime(gain, t0 + Math.min(0.02, dur*0.3));
+        env.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        src.connect(f).connect(env);
+        env.connect(master); send(env, rev);
+        src.start(t0); src.stop(t0 + dur + 0.06);
+    }
+    function unlock(){
+        init();
+        if (!ctx) return;
+        if (ctx.state === 'suspended') ctx.resume();
+        const b = ctx.createBufferSource();
+        b.buffer = ctx.createBuffer(1, 1, 22050);
+        b.connect(ctx.destination); b.start(0);
+    }
+    return {
+        unlock,
+        isEnabled: () => enabled,
+        setEnabled(v){ enabled = v; if (v) unlock(); },
+        tick(urgent){
+            if (!enabled || !ctx) return;
+            const base = urgent ? 1450 : 1020;
+            const vol  = urgent ? 0.055 : 0.032;
+            tone({ freq: base, type:'sine', dur:0.085, gain:vol });
+            tone({ freq: base*1.6, type:'sine', dur:0.045, gain:vol*0.35 });
+            noise({ freq:3200, q:1.4, dur:0.03, gain:vol*0.8, rev:0.08 });
+        },
+        correct(){
+            if (!enabled || !ctx) return;
+            [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                bell(f, i*0.075, 1.35 - i*0.12, 0.20 - i*0.02, 0.55);
+            });
+            noise({ at:0.02, dur:0.55, gain:0.045, freq:2600, freqTo:9000, q:1.2, rev:0.6 });
+            tone({ freq:130.81, type:'sine', dur:0.5, gain:0.09, rev:0.2 });
+        },
+        wrong(){
+            if (!enabled || !ctx) return;
+            const t0 = ctx.currentTime;
+            [0, 8].forEach(det => {
+                const osc = ctx.createOscillator();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(196, t0);
+                osc.frequency.exponentialRampToValueAtTime(110, t0 + 0.42);
+                osc.detune.value = det;
+                const f = ctx.createBiquadFilter();
+                f.type = 'lowpass';
+                f.frequency.setValueAtTime(1100, t0);
+                f.frequency.exponentialRampToValueAtTime(300, t0 + 0.42);
+                f.Q.value = 5;
+                const env = ctx.createGain();
+                env.gain.setValueAtTime(0.0001, t0);
+                env.gain.exponentialRampToValueAtTime(0.11, t0 + 0.012);
+                env.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.45);
+                osc.connect(f).connect(env);
+                env.connect(master); send(env, 0.18);
+                osc.start(t0); osc.stop(t0 + 0.5);
+            });
+            tone({ freq:110, glideTo:55, type:'sine', dur:0.35, gain:0.15 });
+        },
+        timeOut(){
+            if (!enabled || !ctx) return;
+            [392.00, 329.63, 261.63].forEach((f, i) => {
+                bell(f, i*0.16, 1.05, 0.15, 0.5);
+            });
+            tone({ freq:98, glideTo:65, type:'sine', at:0.3, dur:0.8, gain:0.1, rev:0.3 });
+        },
+        start(){
+            if (!enabled || !ctx) return;
+            noise({ dur:0.6, gain:0.035, freq:400, freqTo:3200, q:0.9, rev:0.5 });
+            bell(587.33, 0.04, 0.9, 0.13, 0.5);
+            bell(880.00, 0.16, 1.0, 0.11, 0.5);
+        },
+        finish(){
+            if (!enabled || !ctx) return;
+            [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                bell(f, i*0.11, 1.5, 0.20, 0.6);
+            });
+            bell(1567.98, 0.44, 1.6, 0.10, 0.7);
+            noise({ at:0.05, dur:1.0, gain:0.035, freq:2200, freqTo:9000, q:1.2, rev:0.7 });
+            tone({ freq:130.81, type:'sine', at:0.4, dur:0.9, gain:0.10, rev:0.3 });
+        },
+        themeSwitch(){
+            if (!enabled || !ctx) return;
+            noise({ dur:0.55, gain:0.04, freq:600, freqTo:3400, q:0.85, rev:0.55 });
+            bell(659.25, 0.06, 0.7, 0.10, 0.6);
+            bell(987.77, 0.14, 0.85, 0.09, 0.6);
+        }
+    };
+})();
+
+/* =========================================================
+   QUIZ DATA & LOGIC
+   ========================================================= */
+const ILLUSTRATIONS = {
+    blueprint: {
+        emblem: `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="20" height="22" rx="2"/><line x1="10" y1="10" x2="22" y2="10"/><line x1="10" y1="14" x2="22" y2="14"/><line x1="10" y1="18" x2="18" y2="18"/><path d="M18 24 Q22 20 26 16 L24 15 Q20 19 16 23 Z" fill="currentColor" fill-opacity="0.35"/></svg>`,
+        art: `<svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="60" y="55" width="120" height="150" rx="10"/><path d="M60 75 Q42 75 42 95 Q42 115 60 115"/><path d="M180 75 Q198 75 198 95 Q198 115 180 115"/><line x1="85" y1="90" x2="155" y2="90"/><line x1="85" y1="112" x2="155" y2="112"/><line x1="85" y1="134" x2="130" y2="134"/><path d="M148 210 Q172 180 196 158 Q206 152 214 150 Q212 158 206 166 Q182 190 158 212 Z" fill="currentColor" fill-opacity="0.2"/></svg>`
+    },
+    bridge: {
+        emblem: `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22 Q16 8 28 22"/><line x1="4" y1="22" x2="4" y2="28"/><line x1="28" y1="22" x2="28" y2="28"/><line x1="16" y1="15" x2="16" y2="28"/></svg>`,
+        art: `<svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="28" y="120" width="34" height="80" rx="3"/><rect x="178" y="120" width="34" height="80" rx="3"/><path d="M28 120 Q120 20 212 120"/><line x1="62" y1="96" x2="62" y2="120"/><line x1="120" y1="64" x2="120" y2="120"/><line x1="178" y1="96" x2="178" y2="120"/><line x1="28" y1="120" x2="212" y2="120"/></svg>`
+    },
+    clasp: {
+        emblem: `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="16" rx="7" ry="5"/><ellipse cx="22" cy="16" rx="7" ry="5"/></svg>`,
+        art: `<svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M40 120 Q40 70 80 60 Q120 50 130 90 Q136 120 110 130 Q88 138 78 118"/><circle cx="78" cy="118" r="8"/><path d="M200 120 Q200 170 160 180 Q120 190 110 150 Q104 120 130 110 Q152 102 162 122"/><circle cx="162" cy="122" r="8"/><path d="M78 118 Q120 108 130 110" stroke-dasharray="6 8" opacity="0.6"/></svg>`
+    },
+    funnel: {
+        emblem: `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><polygon points="16,4 26,16 6,16"/><polygon points="10,16 22,16 28,28 4,28"/></svg>`,
+        art: `<svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="120,30 175,90 65,90" fill="currentColor" fill-opacity="0.2"/><polygon points="65,90 175,90 205,150 35,150"/><polygon points="35,150 205,150 225,210 15,210"/></svg>`
+    },
+    golden: {
+        emblem: `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5 h12 v10 a6 6 0 0 1 -12 0 z"/><path d="M10 8 h-3 a3 3 0 0 0 3 4"/><path d="M22 8 h3 a3 3 0 0 1 -3 4"/><line x1="16" y1="21" x2="16" y2="26"/><line x1="11" y1="26" x2="21" y2="26"/></svg>`,
+        art: `<svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M30 160 Q20 110 55 75"/><path d="M210 160 Q220 110 185 75"/><path d="M85 55 h70 v40 a35 35 0 0 1 -70 0 z" fill="currentColor" fill-opacity="0.2"/><line x1="120" y1="130" x2="120" y2="160"/><line x1="80" y1="175" x2="160" y2="175"/><path d="M120 70 l6 12 13 2 -9.5 9 2.3 13 -11.8 -6.2 -11.8 6.2 2.3 -13 -9.5 -9 13 -2 z" fill="currentColor"/></svg>`
+    }
+};
+
+const THEMES = {
+    blueprint: { badge:'المخطط', accent:'#4a7ab5', bright:'#7aa5d5', shadow:'#3b6291', bgGrad:'linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%)' },
+    bridge: { badge:'الربط المنطقي', accent:'#b8843a', bright:'#d9a860', shadow:'#936a2e', bgGrad:'linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%)' },
+    clasp: { badge:'المشبك والعروة', accent:'#d66d42', bright:'#f08e65', shadow:'#ab5735', bgGrad:'linear-gradient(135deg, #ffedd5 0%, #fff7ed 100%)' },
+    funnel: { badge:'الترتيب الهرمي', accent:'#3d7a68', bright:'#5aa88a', shadow:'#316253', bgGrad:'linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)' },
+    golden: { badge:'السؤال الذهبي', accent:'#a8823a', bright:'#d4af5a', shadow:'#86682e', bgGrad:'linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%)' }
+};
+
+const questions = [
+    { theme:'blueprint', q:"أي ترتيب يمثل تسلسلًا صحيحًا لتطوير الكتابة؟", options:["مراجعة ← كتابة ← تخطيط","كتابة ← تخطيط ← مراجعة","تخطيط ← كتابة ← إعادة كتابة ومراجعة","مراجعة ← نتائج ← كتابة"], correct:2 },
+    { theme:'bridge', q:"عند الانتقال من فقرة إلى أخرى، ماذا نحتاج؟", options:["تغيير الموضوع فجأة","تكرار نفس الفكرة","رابط منطقي بين الأفكار","حذف الفقرة السابقة"], correct:2 },
+    { theme:'clasp', q:"ما المقصود بفكرة «المشبك والعروة»؟", options:["تزيين البحث","ربط فكرة الفقرة السابقة بالفكرة التالية باستخدام انتقال منطقي","اختصار البحث","زيادة عدد الفقرات"], correct:1 },
+    { theme:'funnel', q:"رتّبي الأفكار من الأوسع إلى الأكثر تفصيلًا:", options:["الشاملة ← الكبيرة ← الصغيرة","الكبيرة ← الشاملة ← الصغيرة","الصغيرة ← الكبيرة ← الشاملة","الشاملة ← الصغيرة ← الكبيرة"], correct:0 },
+    { theme:'golden', q:"السؤال الذهبي", sub:"لو طلبت منكِ تلخيص هذه الجزئية في 5 كلمات / أفعال، ماذا تقولين؟", options:["اكتبي ← احذفي ← شمول ← رتّبي ← اطبعي","خططي ← اكتبي ← أعيدي الكتابة ← اربطي ← راجعي","اقرئي ← احفظي ← اكتبي ← انسخي ← سلّمي","اكتبي ← راجعي ← خططي ← احذفي ← انتهي"], correct:1 }
+];
+
+let currentQ = 0, score = 0, answered = false;
+let rafId = null, deadline = 0, lastTickSec = -1;
+const LETTERS = ['أ','ب','ج','د'];
+
+function applyTheme(name) {
+    const t = THEMES[name], art = ILLUSTRATIONS[name];
+    document.body.style.setProperty('--bg-gradient', t.bgGrad);
+    
+    const card = document.getElementById('quizCard');
+    card.style.setProperty('--theme-accent', t.accent);
+    card.style.setProperty('--theme-accent-bright', t.bright);
+    card.style.setProperty('--theme-shadow', t.shadow);
+    card.style.setProperty('--theme-glow', t.accent + '26');
+    
+    document.getElementById('emblemMark').innerHTML = art.emblem;
+    document.getElementById('themeLabel').textContent = t.badge;
+    
+    const artMain = document.getElementById('themeArtMain');
+    artMain.innerHTML = art.art;
+    artMain.style.animation = 'none';
+    void artMain.offsetWidth;
+    artMain.style.animation = 'fadeUp 0.6s cubic-bezier(0.34,1.56,0.64,1) both';
+}
+
+function startTimer() {
+    cancelAnimationFrame(rafId);
+    const duration = 20000; deadline = performance.now() + duration;
+    lastTickSec = 21;
+    const fill = document.getElementById('timerFill');
+    
+    function frame(now) {
+        const remaining = Math.max(0, deadline - now);
+        fill.style.width = (remaining / duration * 100) + '%';
+        
+        const secs = Math.ceil(remaining / 1000);
+        if (secs !== lastTickSec){
+            lastTickSec = secs;
+            if (secs <= 5 && secs > 0) Sound.tick(true);
+            else if (secs <= 10 && secs > 5) Sound.tick(false);
+        }
+        
+        if(remaining <= 5000) {
+            fill.style.background = 'var(--bad)';
+            fill.style.boxShadow = '0 0 10px var(--bad)';
+        } else {
+            fill.style.background = 'var(--theme-accent)';
+            fill.style.boxShadow = '0 0 10px var(--theme-accent)';
+        }
+        
+        if(remaining <= 0) { rafId = null; timeOut(); return; }
+        rafId = requestAnimationFrame(frame);
+    }
+    rafId = requestAnimationFrame(frame);
+}
+
+function renderDots() {
+    const dots = document.getElementById('dots');
+    dots.innerHTML = '';
+    questions.forEach((_, i) => {
+        let d = document.createElement('span');
+        d.className = 'dot' + (i === currentQ ? ' active' : i < currentQ ? ' done' : '');
+        dots.appendChild(d);
+    });
+}
+
+function loadQuestion() {
+    answered = false;
+    const q = questions[currentQ];
+    applyTheme(q.theme);
+    if(currentQ > 0) Sound.themeSwitch();
+    
+    renderDots();
+    document.getElementById('questionText').innerHTML = q.q + (q.sub ? `<span class="q-sub">${q.sub}</span>` : '');
+    const grid = document.getElementById('optionsGrid');
+    grid.className = 'options-grid' + (q.options.length > 4 ? ' single' : '');
+    grid.innerHTML = '';
+    
+    q.options.forEach((opt, i) => {
+        let btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="letter">${LETTERS[i]}</span><span class="opt-text">${opt}</span><span class="mark"></span>`;
+        btn.onclick = () => selectAnswer(i, btn);
+        btn.style.animation = `fadeUp 0.4s ${0.1 + i*0.08}s cubic-bezier(0.34,1.56,0.64,1) both`;
+        grid.appendChild(btn);
+    });
+    
+    document.getElementById('feedbackText').className = 'feedback-text';
+    document.getElementById('nextBtn').classList.remove('show');
+    startTimer();
+}
+
+function selectAnswer(i, btn) {
+    if(answered) return;
+    answered = true; cancelAnimationFrame(rafId);
+    const q = questions[currentQ];
+    const all = document.querySelectorAll('.option-btn');
+    
+    all.forEach(b => b.classList.add('locked'));
+    if(i === q.correct) {
+        btn.classList.add('correct'); btn.querySelector('.mark').textContent = '✓';
+        score++; document.getElementById('score').textContent = score;
+        showFeedback('إجابة صحيحة، رائعة! 🌟', 'ok');
+        Sound.correct();
+    } else {
+        btn.classList.add('wrong'); btn.querySelector('.mark').textContent = '✕';
+        all[q.correct].classList.add('correct'); all[q.correct].querySelector('.mark').textContent = '✓';
+        showFeedback('إجابة غير صحيحة', 'bad');
+        Sound.wrong();
+    }
+    all.forEach((b, idx) => { if(idx !== i && idx !== q.correct) b.classList.add('dim'); });
+    
+    const nxtBtn = document.getElementById('nextBtn');
+    nxtBtn.classList.add('show'); nxtBtn.focus();
+}
+
+function timeOut() {
+    if(answered) return;
+    answered = true;
+    const q = questions[currentQ];
+    const all = document.querySelectorAll('.option-btn');
+    all.forEach(b => b.classList.add('locked', 'dim'));
+    all[q.correct].classList.remove('dim');
+    all[q.correct].classList.add('correct');
+    all[q.correct].querySelector('.mark').textContent = '✓';
+    showFeedback('انتهى الوقت!', 'bad');
+    Sound.timeOut();
+    document.getElementById('nextBtn').classList.add('show');
+}
+
+function showFeedback(txt, type) {
+    const el = document.getElementById('feedbackText');
+    el.textContent = txt; el.className = `feedback-text show ${type}`;
+}
+
+// Event Listeners
+document.getElementById('startBtn').onclick = () => {
+    Sound.unlock();
+    setTimeout(() => Sound.start(), 60);
+    document.getElementById('startOverlay').classList.add('hidden');
+    loadQuestion();
+};
+
+document.getElementById('nextBtn').onclick = () => {
+    currentQ++;
+    if(currentQ < questions.length) loadQuestion();
+    else {
+        cancelAnimationFrame(rafId);
+        document.getElementById('resultScreen').classList.remove('hidden');
+        document.getElementById('finalScore').textContent = score;
+        setTimeout(() => { document.getElementById('ringFill').style.strokeDashoffset = 628 * (1 - score / questions.length); }, 150);
+        document.getElementById('resultTitle').textContent = score === 5 ? 'ممتاز! 🌟' : 'عمل رائع! 👍';
+        document.getElementById('resultMessage').textContent = score === 5 ? 'لقد أتقنتِ جميع استراتيجيات الكتابة بجدارة.' : 'راجعِ الاستراتيجيات وحاولي مجددًا لزيادة رصيدك.';
+        Sound.finish();
+    }
+};
+
+document.getElementById('restartBtn').onclick = () => {
+    currentQ = 0; score = 0; answered = false;
+    document.getElementById('score').textContent = '0';
+    document.getElementById('resultScreen').classList.add('hidden');
+    Sound.start();
+    loadQuestion();
+};
+
+document.getElementById('soundBtn').onclick = (e) => {
+    const btn = e.currentTarget;
+    const on = !Sound.isEnabled();
+    Sound.setEnabled(on);
+    btn.textContent = on ? '🔊' : '🔇';
+    btn.classList.toggle('off', !on);
+    if (on) { Sound.unlock(); setTimeout(() => Sound.tick(false), 40); }
+};
+
+// Subtle Background Particle Network
+const ctx = document.getElementById('ideaNetwork').getContext('2d');
+let w, h, nodes = [];
+function resize() {
+    w = window.innerWidth; h = window.innerHeight;
+    ctx.canvas.width = w; ctx.canvas.height = h;
+    nodes = Array.from({length: 35}, () => ({
+        x: Math.random()*w, y: Math.random()*h, 
+        vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3
+    }));
+}
+function drawNodes() {
+    ctx.clearRect(0,0,w,h);
+    nodes.forEach(n => {
+        n.x += n.vx; n.y += n.vy;
+        if(n.x < 0 || n.x > w) n.vx *= -1; 
+        if(n.y < 0 || n.y > h) n.vy *= -1;
+        ctx.fillStyle = 'rgba(74, 122, 181, 0.4)';
+        ctx.beginPath(); ctx.arc(n.x, n.y, 2.5, 0, Math.PI*2); ctx.fill();
+        nodes.forEach(n2 => {
+            const d = Math.hypot(n.x - n2.x, n.y - n2.y);
+            if(d < 150) {
+                ctx.strokeStyle = `rgba(74, 122, 181, ${0.12 - d/1250})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
+            }
+        });
+    });
+    requestAnimationFrame(drawNodes);
+}
+window.onresize = resize; resize(); drawNodes();
+</script>
+</body>
+</html>
